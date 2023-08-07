@@ -1,4 +1,4 @@
-package ru.kurochkin.shape;
+package ru.kurochkin.shapes;
 
 public interface Shape {
     double getWidth();

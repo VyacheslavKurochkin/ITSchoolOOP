@@ -1,16 +1,12 @@
-package ru.kurochkin.shape;
+package ru.kurochkin.shapes;
 
 public class Triangle implements Shape {
-    private double x1;
-    private double y1;
-    private double x2;
-    private double y2;
-    private double x3;
-    private double y3;
-
-    final double side1Length;
-    final double side2Length;
-    final double side3Length;
+    private final double x1;
+    private final double y1;
+    private final double x2;
+    private final double y2;
+    private final double x3;
+    private final double y3;
 
     public Triangle(double x1, double y1, double x2, double y2, double x3, double y3) {
         this.x1 = x1;
@@ -20,9 +16,6 @@ public class Triangle implements Shape {
         this.y2 = y2;
         this.y3 = y3;
 
-        side1Length = getLength(x1, y1, x2, y2);
-        side2Length = getLength(x1, y1, x3, y3);
-        side3Length = getLength(x2, y2, x3, y3);
     }
 
     @Override
@@ -42,7 +35,7 @@ public class Triangle implements Shape {
 
     @Override
     public double getPerimeter() {
-        return side1Length + side2Length + side3Length;
+        return getLength(x1, y1, x2, y2) + getLength(x1, y1, x3, y3) + getLength(x2, y2, x3, y3);
     }
 
     public static double getLength(double x1, double y1, double x2, double y2) {
@@ -51,7 +44,7 @@ public class Triangle implements Shape {
 
     @Override
     public String toString() {
-        return "Треугольник";
+        return "Треугольник (" + x1 + ", " + y1 + "), (" + x2 + ", " + y2 + "), (" + x3 + ", " + y3 + ")";
     }
 
     @Override
@@ -66,7 +59,8 @@ public class Triangle implements Shape {
 
         Triangle triangle = (Triangle) object;
 
-        return side1Length == triangle.side1Length && side2Length == triangle.side2Length && side3Length == triangle.side3Length;
+        return x1 == triangle.x1 && y1 == triangle.y1 && x2 == triangle.x2 && y2 == triangle.y2 &&
+                x3 == triangle.x3 && y3 == triangle.y3;
     }
 
     @Override
