@@ -12,8 +12,8 @@ public class Main {
         System.out.println("вектор2 = " + vector2);
         System.out.println("вектор3 = " + vector3);
 
-        vector1.addVector(vector2);
-        vector3.subtractVector(vector1);
+        vector1.add(vector2);
+        vector3.subtract(vector1);
         vector2.multiplyByScalar(0.5);
 
         System.out.println("Прибавление к вектору другого вектора:");
@@ -33,12 +33,12 @@ public class Main {
         System.out.println("Получение длины вектора:");
         System.out.println("вектор2 длинна: " + vector2.getLength());
 
-        Vector vector4 = Vector.getAddition(vector2, vector3);
+        Vector vector4 = Vector.getSum(vector2, vector3);
 
         System.out.println("Сложение двух векторов:");
         System.out.println("вектор4 = вектор2 + вектор3: " + vector4);
 
         System.out.println("Скалярное произведение векторов:");
-        System.out.println("вектор4 и вектор1: " + Vector.getScalarMultiplying(vector4, vector1));
+        System.out.println("вектор4 и вектор1: " + Vector.getScalarProduct(vector4, vector1));
     }
 }

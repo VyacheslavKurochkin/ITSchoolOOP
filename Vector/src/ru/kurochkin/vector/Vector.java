@@ -3,25 +3,19 @@ package ru.kurochkin.vector;
 import java.util.Arrays;
 
 public class Vector {
-    public double[] vector;
-
-    private int dimension;
+    private double[] vertex;
 
     public Vector(int dimension) {
         if (dimension <= 0) {
-            throw new IllegalArgumentException("Размерность не может быть меньше 1");
+            throw new IllegalArgumentException(dimension + " - недопустимое значение рзмерности, " +
+                    "допустимые значения начинаются с 1");
         }
 
-        vector = new double[dimension];
-        this.dimension = dimension;
-
-        for (int i = 0; i < dimension; i++) {
-            vector[i] = 0;
-        }
+        vertex = new double[dimension];
     }
 
-    public Vector(Vector inputVector) {
-        this(inputVector.dimension, inputVector.vector);
+    public Vector(Vector vector) {
+        this(vector.vertex.length, vector.vertex);
     }
 
     public Vector(double[] components) {
@@ -30,46 +24,62 @@ public class Vector {
 
     public Vector(int dimension, double[] components) {
         if (dimension <= 0) {
-            throw new IllegalArgumentException("Размерность не может быть меньше 1");
+            throw new IllegalArgumentException(dimension + " - недопустимое значение рзмерности, " +
+                    "допустимые значения начинаются с 1");
         }
-
-        this.dimension = dimension;
-        vector = new double[dimension];
 
         int minLength = Math.min(dimension, components.length);
 
+        vertex = new double[dimension];
+
         for (int i = 0; i < minLength; i++) {
-            this.vector[i] = components[i];
-        }
-
-        for (int i = minLength; i < dimension; i++) {
-            this.vector[i] = 0;
+            vertex[i] = components[i];
         }
     }
 
-    public int getSize() {
-        return dimension;
+    public int getDimension() {
+        return vertex.length;
     }
 
-    public void addVector(Vector inputVector) {
-        int minDimension = Math.min(dimension, inputVector.dimension);
+    public void add(Vector vector) {
+        double[] tempVertex;
+
+        if (vertex.length < vector.vertex.length) {
+            tempVertex = Arrays.copyOf(vertex, vector.vertex.length);
+        } else {
+            tempVertex = vertex;
+        }
+
+        int minDimension = Math.min(vertex.length, vector.vertex.length);
 
         for (int i = 0; i < minDimension; i++) {
-            vector[i] += inputVector.vector[i];
+            tempVertex[i] += vector.vertex[i];
         }
+
+        vertex = tempVertex;
     }
 
-    public void subtractVector(Vector inputVector) {
-        int minDimension = Math.min(dimension, inputVector.dimension);
+    public void subtract(Vector vector) {
+        double[] tempVertex;
+
+        if (vertex.length < vector.vertex.length) {
+            tempVertex = Arrays.copyOf(vertex, vector.vertex.length);
+        } else {
+            tempVertex = vertex;
+        }
+
+        int minDimension = Math.min(vertex.length, vector.vertex.length);
 
         for (int i = 0; i < minDimension; i++) {
-            vector[i] -= inputVector.vector[i];
+            vertex[i] -= vector.vertex[i];
         }
+
+        vertex = tempVertex;
     }
 
     public void multiplyByScalar(double scalar) {
-        for (int i = 0; i < dimension; i++) {
-            vector[i] *= scalar;
+        for (int i = 0; i < vertex.length; i++) {
+            vertex[i] *= scalar;
         }
     }
 
@@ -80,7 +90,7 @@ public class Vector {
     public double getLength() {
         double sum = 0;
 
-        for (double component : vector) {
+        for (double component : vertex) {
             sum += component * component;
         }
 
@@ -88,57 +98,45 @@ public class Vector {
     }
 
     public double getComponent(int index) {
-        if (index < 0 || index >= dimension) {
-            throw new IllegalArgumentException("Не допустимое значения индекса компоненты ветора");
+        if (index < 0 || index >= vertex.length) {
+            throw new IndexOutOfBoundsException("Индекс " + index + " за пределами диапазона допустимых значений " +
+                    "[0.." + (vertex.length - 1) + "]");
         }
 
-        return vector[index];
+        return vertex[index];
     }
 
-    public void setComponent(double component, int index) {
-        vector[index] = component;
+    public void setComponent(int index, double component) {
+        if (index < 0 || index >= vertex.length) {
+            throw new IndexOutOfBoundsException("Индекс " + index + " за пределами диапазона допустимых значений " +
+                    "[0.." + (vertex.length - 1) + "]");
+        }
+
+        vertex[index] = component;
     }
 
-    public static Vector getAddition(Vector vector1, Vector vector2) {
-        int maxDimension = Math.max(vector1.dimension, vector2.dimension);
-        int minDimension = Math.min(vector1.dimension, vector2.dimension);
+    public static Vector getSum(Vector vector1, Vector vector2) {
+        Vector resultingVector = new Vector(vector1);
 
-        Vector newVector = new Vector(maxDimension);
+        resultingVector.add(vector2);
 
-        for (int i = 0; i < minDimension; i++) {
-            newVector.setComponent(vector1.vector[i] + vector2.vector[i], i);
-        }
-
-        for (int i = minDimension; i < maxDimension; i++) {
-            newVector.setComponent(vector1.dimension == maxDimension ? vector1.vector[i] : vector2.vector[i], i);
-        }
-
-        return newVector;
+        return resultingVector;
     }
 
-    public static Vector getSubtraction(Vector vector1, Vector vector2) {
-        int maxDimension = Math.max(vector1.dimension, vector2.dimension);
-        int minDimension = Math.min(vector1.dimension, vector2.dimension);
+    public static Vector getDifference(Vector vector1, Vector vector2) {
+        Vector resultingVector = new Vector(vector1);
 
-        Vector newVector = new Vector(maxDimension);
+        resultingVector.subtract(vector2);
 
-        for (int i = 0; i < minDimension; i++) {
-            newVector.setComponent(vector1.vector[i] - vector2.vector[i], i);
-        }
-
-        for (int i = minDimension; i < maxDimension; i++) {
-            newVector.setComponent(vector1.dimension == maxDimension ? vector1.vector[i] : -vector2.vector[i], i);
-        }
-
-        return newVector;
+        return resultingVector;
     }
 
-    public static double getScalarMultiplying(Vector vector1, Vector vector2) {
-        int minDimension = Math.min(vector1.dimension, vector2.dimension);
+    public static double getScalarProduct(Vector vector1, Vector vector2) {
+        int minDimension = Math.min(vector1.vertex.length, vector2.vertex.length);
         double sum = 0;
 
         for (int i = 0; i < minDimension; i++) {
-            sum += vector1.vector[i] * vector2.vector[i];
+            sum += vector1.vertex[i] * vector2.vertex[i];
         }
 
         return sum;
@@ -146,7 +144,16 @@ public class Vector {
 
     @Override
     public String toString() {
-        return Arrays.toString(vector).replace("[", "{").replace("]", "}");
+        StringBuilder sb = new StringBuilder();
+        sb.append("{");
+
+        for (int i = 0; i < vertex.length - 1; i++) {
+            sb.append(vertex[i]).append(",");
+        }
+
+        sb.append(vertex[vertex.length - 1]).append("}");
+
+        return sb.toString();
     }
 
     @Override
@@ -161,7 +168,7 @@ public class Vector {
 
         Vector vector = (Vector) object;
 
-        return dimension == vector.dimension && Arrays.equals(this.vector, vector.vector);
+        return vertex.length == vector.vertex.length && Arrays.equals(vertex, vector.vertex);
     }
 
     @Override
@@ -169,8 +176,8 @@ public class Vector {
         final int prime = 17;
         int hash = 1;
 
-        hash = prime * hash + dimension;
-        hash = prime * hash + Arrays.hashCode(vector);
+        hash = prime * hash + vertex.length;
+        hash = prime * hash + Arrays.hashCode(vertex);
 
         return hash;
     }
