@@ -50,9 +50,7 @@ public class Vector {
             tempVertex = vertex;
         }
 
-        int minDimension = Math.min(vertex.length, vector.vertex.length);
-
-        for (int i = 0; i < minDimension; i++) {
+        for (int i = 0; i < vector.vertex.length; i++) {
             tempVertex[i] += vector.vertex[i];
         }
 
@@ -68,10 +66,8 @@ public class Vector {
             tempVertex = vertex;
         }
 
-        int minDimension = Math.min(vertex.length, vector.vertex.length);
-
-        for (int i = 0; i < minDimension; i++) {
-            vertex[i] -= vector.vertex[i];
+        for (int i = 0; i < vector.vertex.length; i++) {
+            tempVertex[i] -= vector.vertex[i];
         }
 
         vertex = tempVertex;
