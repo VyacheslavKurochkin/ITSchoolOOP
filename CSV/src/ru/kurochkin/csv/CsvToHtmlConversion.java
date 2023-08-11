@@ -55,6 +55,7 @@ public class CsvToHtmlConversion {
                         if (isCellBegin) {
                             if (isQuotePreviousCharacter) {
                                 htmlCell.append(currentCharacter);
+
                                 isQuotePreviousCharacter = false;
                             } else {
                                 isQuotePreviousCharacter = true;
@@ -66,6 +67,7 @@ public class CsvToHtmlConversion {
                     } else if (currentCharacter == ',') {
                         if (isQuotePreviousCharacter || !isQuotedCell) {
                             addHtmlCell(htmlRow, htmlCell);
+
                             isCellBegin = false;
                             isQuotedCell = false;
                         } else {
@@ -75,6 +77,7 @@ public class CsvToHtmlConversion {
                         isQuotePreviousCharacter = false;
                     } else {
                         addHtmlCharacter(htmlCell, currentCharacter);
+
                         isCellBegin = true;
                     }
 
@@ -84,6 +87,7 @@ public class CsvToHtmlConversion {
                 if (isQuotePreviousCharacter || !isQuotedCell) {
                     addHtmlCell(htmlRow, htmlCell);
                     writeHtmlRow(writer, htmlRow);
+
                     isCellBegin = false;
                 } else {
                     htmlCell.append("<br/>");
