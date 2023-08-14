@@ -1,35 +1,39 @@
 package ru.kurochkin.shapes;
 
-public class Square implements Shape {
-    private final double sideLength;
+public class Circle implements Shape {
+    private final double radius;
 
-    public Square(double sideLength) {
-        this.sideLength = sideLength;
+    public Circle(double radius) {
+        this.radius = radius;
+    }
+
+    public double getRadius() {
+        return radius;
     }
 
     @Override
     public double getWidth() {
-        return sideLength;
+        return 2 * radius;
     }
 
     @Override
     public double getHeight() {
-        return sideLength;
+        return 2 * radius;
     }
 
     @Override
     public double getArea() {
-        return sideLength * sideLength;
+        return Math.PI * radius * radius;
     }
 
     @Override
     public double getPerimeter() {
-        return sideLength * 4;
+        return 2 * Math.PI * radius;
     }
 
     @Override
     public String toString() {
-        return "Квадрат (" + "Сторона: " + sideLength + ")";
+        return String.format("Окружность (Радиус: %f)", radius);
     }
 
     @Override
@@ -42,17 +46,17 @@ public class Square implements Shape {
             return false;
         }
 
-        Square square = (Square) object;
+        Circle circle = (Circle) object;
 
-        return sideLength == square.sideLength;
+        return radius == circle.radius;
     }
 
     @Override
     public int hashCode() {
-        final int prime = 37;
+        final int prime = 17;
         int hash = 1;
 
-        hash = prime * hash + Double.hashCode(sideLength);
+        hash = prime * hash + Double.hashCode(radius);
 
         return hash;
     }
