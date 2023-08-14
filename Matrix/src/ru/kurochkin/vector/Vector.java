@@ -3,83 +3,65 @@ package ru.kurochkin.vector;
 import java.util.Arrays;
 
 public class Vector {
-    private double[] vertex;
+    private double[] components;
 
     public Vector(int dimension) {
         if (dimension <= 0) {
-            throw new IllegalArgumentException(dimension + " - недопустимое значение рзмерности, " +
+            throw new IllegalArgumentException(dimension + " - недопустимое значение размерности, " +
                     "допустимые значения начинаются с 1");
         }
 
-        vertex = new double[dimension];
+        components = new double[dimension];
     }
 
     public Vector(Vector vector) {
-        this(vector.vertex.length, vector.vertex);
+        this(vector.components.length, vector.components);
     }
 
     public Vector(double[] components) {
         this(components.length, components);
     }
 
-    public Vector(int dimension, Vector vector) {
-        this(dimension, vector.vertex);
-    }
-
     public Vector(int dimension, double[] components) {
         if (dimension <= 0) {
-            throw new IllegalArgumentException(dimension + " - недопустимое значение рзмерности, " +
+            throw new IllegalArgumentException(dimension + " - недопустимое значение размерности, " +
                     "допустимые значения начинаются с 1");
         }
 
-        int minLength = Math.min(dimension, components.length);
+        int minDimension = Math.min(dimension, components.length);
 
-        vertex = new double[dimension];
+        this.components = new double[dimension];
 
-        for (int i = 0; i < minLength; i++) {
-            vertex[i] = components[i];
-        }
+        System.arraycopy(components, 0, this.components, 0, minDimension);
+    }
+
+    public Vector(int dimension, Vector vector) {
+        this(dimension, vector.components);
     }
 
     public int getDimension() {
-        return vertex.length;
+        return components.length;
     }
 
     public void add(Vector vector) {
-        double[] tempVertex;
+        components = Arrays.copyOf(components, vector.components.length);
 
-        if (vertex.length < vector.vertex.length) {
-            tempVertex = Arrays.copyOf(vertex, vector.vertex.length);
-        } else {
-            tempVertex = vertex;
+        for (int i = 0; i < vector.components.length; i++) {
+            components[i] += vector.components[i];
         }
-
-        for (int i = 0; i < vector.vertex.length; i++) {
-            tempVertex[i] += vector.vertex[i];
-        }
-
-        vertex = tempVertex;
     }
 
     public void subtract(Vector vector) {
-        double[] tempVertex;
+        components = Arrays.copyOf(components, vector.components.length);
 
-        if (vertex.length < vector.vertex.length) {
-            tempVertex = Arrays.copyOf(vertex, vector.vertex.length);
-        } else {
-            tempVertex = vertex;
+        for (int i = 0; i < vector.components.length; i++) {
+            components[i] -= vector.components[i];
         }
-
-        for (int i = 0; i < vector.vertex.length; i++) {
-            tempVertex[i] -= vector.vertex[i];
-        }
-
-        vertex = tempVertex;
     }
 
     public void multiplyByScalar(double scalar) {
-        for (int i = 0; i < vertex.length; i++) {
-            vertex[i] *= scalar;
+        for (int i = 0; i < components.length; i++) {
+            components[i] *= scalar;
         }
     }
 
@@ -90,7 +72,7 @@ public class Vector {
     public double getLength() {
         double sum = 0;
 
-        for (double component : vertex) {
+        for (double component : components) {
             sum += component * component;
         }
 
@@ -98,21 +80,21 @@ public class Vector {
     }
 
     public double getComponent(int index) {
-        if (index < 0 || index >= vertex.length) {
+        if (index < 0 || index >= components.length) {
             throw new IndexOutOfBoundsException("Индекс " + index + " за пределами диапазона допустимых значений " +
-                    "[0.." + (vertex.length - 1) + "]");
+                    "[0.." + (components.length - 1) + "]");
         }
 
-        return vertex[index];
+        return components[index];
     }
 
     public void setComponent(int index, double component) {
-        if (index < 0 || index >= vertex.length) {
+        if (index < 0 || index >= components.length) {
             throw new IndexOutOfBoundsException("Индекс " + index + " за пределами диапазона допустимых значений " +
-                    "[0.." + (vertex.length - 1) + "]");
+                    "[0.." + (components.length - 1) + "]");
         }
 
-        vertex[index] = component;
+        components[index] = component;
     }
 
     public static Vector getSum(Vector vector1, Vector vector2) {
@@ -132,11 +114,11 @@ public class Vector {
     }
 
     public static double getScalarProduct(Vector vector1, Vector vector2) {
-        int minDimension = Math.min(vector1.vertex.length, vector2.vertex.length);
+        int minDimension = Math.min(vector1.components.length, vector2.components.length);
         double sum = 0;
 
         for (int i = 0; i < minDimension; i++) {
-            sum += vector1.vertex[i] * vector2.vertex[i];
+            sum += vector1.components[i] * vector2.components[i];
         }
 
         return sum;
@@ -145,13 +127,14 @@ public class Vector {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("{");
+        sb.append('{');
 
-        for (int i = 0; i < vertex.length - 1; i++) {
-            sb.append(vertex[i]).append(",");
+        for (double component : components) {
+            sb.append(component).append(", ");
         }
 
-        sb.append(vertex[vertex.length - 1]).append("}");
+        sb.delete(sb.length() - 2, sb.length());
+        sb.append('}');
 
         return sb.toString();
     }
@@ -168,17 +151,11 @@ public class Vector {
 
         Vector vector = (Vector) object;
 
-        return vertex.length == vector.vertex.length && Arrays.equals(vertex, vector.vertex);
+        return Arrays.equals(components, vector.components);
     }
 
     @Override
     public int hashCode() {
-        final int prime = 17;
-        int hash = 1;
-
-        hash = prime * hash + vertex.length;
-        hash = prime * hash + Arrays.hashCode(vertex);
-
-        return hash;
+        return 17 + Arrays.hashCode(components);
     }
 }

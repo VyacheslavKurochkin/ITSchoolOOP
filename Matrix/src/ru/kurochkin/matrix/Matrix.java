@@ -259,7 +259,7 @@ public class Matrix {
             sb.append(vectors[i]);
 
             if (i + 1 != vectors.length) {
-                sb.append(",");
+                sb.append(", ");
             }
         }
 
