@@ -5,8 +5,6 @@ import ru.kurochkin.vector.Vector;
 
 public class Main {
     public static void main(String[] args) {
-        Matrix matrix221 = new Matrix(new double[][]{{1}});
-
         Matrix matrix1 = new Matrix(new double[][]{{-4, -2, -7, 8}, {2, 0, 4, 9}, {2, 0, 6, -3}, {6, 4, -10, -4}});
         Matrix matrix2 = new Matrix(new double[][]{{-4, -2, 1}, {2, 7, 1}, {3, 6, 1}, {8, 3, 2}});
         Vector vector1 = new Vector(new double[]{1.0, 2.0, 10.0, -1});
