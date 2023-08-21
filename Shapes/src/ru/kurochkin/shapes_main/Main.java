@@ -17,7 +17,7 @@ public class Main {
     }
 
     public static Shape getShapeByPositionPerimeter(Shape[] shapes, int position) {
-        if (shapes.length < position) {
+        if (position > shapes.length || position <= 0) {
             return null;
         }
 
