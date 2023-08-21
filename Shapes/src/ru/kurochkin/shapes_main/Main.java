@@ -1,7 +1,7 @@
 package ru.kurochkin.shapes_main;
 
 import ru.kurochkin.shapes.*;
-import ru.kurochkin.shape_comparators.*;
+import ru.kurochkin.shapes_comparators.*;
 
 import java.util.Arrays;
 
@@ -16,14 +16,14 @@ public class Main {
         return shapes[shapes.length - 1];
     }
 
-    public static Shape getShapeByDescendingPerimeter(Shape[] shapes, int position) {
+    public static Shape getShapeByPositionPerimeter(Shape[] shapes, int position) {
         if (shapes.length < position) {
             return null;
         }
 
         Arrays.sort(shapes, new ShapePerimeterComparator());
 
-        return shapes[shapes.length - position - 1];
+        return shapes[shapes.length - position];
     }
 
     public static void main(String[] args) {
@@ -45,7 +45,7 @@ public class Main {
         System.out.println(maxAreaShape);
 
         System.out.println("Фигура со вторым по величине периметром:");
-        Shape secondPerimeterShape = getShapeByDescendingPerimeter(shapes, 2);
+        Shape secondPerimeterShape = getShapeByPositionPerimeter(shapes, 2);
         System.out.println(secondPerimeterShape);
     }
 }

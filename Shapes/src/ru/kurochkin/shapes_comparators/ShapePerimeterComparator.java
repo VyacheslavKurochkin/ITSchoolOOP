@@ -1,4 +1,4 @@
-package ru.kurochkin.shape_comparators;
+package ru.kurochkin.shapes_comparators;
 
 import java.util.Comparator;
 
