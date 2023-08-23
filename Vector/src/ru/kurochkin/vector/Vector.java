@@ -7,8 +7,8 @@ public class Vector {
 
     public Vector(int dimension) {
         if (dimension <= 0) {
-            throw new IllegalArgumentException(dimension + " - недопустимое значение размерности, " +
-                    "допустимые значения начинаются с 1");
+            throw new IllegalArgumentException("Недопустимое значение " + dimension +
+                    " параметра 'размерность вектора', допустимые значения начинаются с 1");
         }
 
         components = new double[dimension];
@@ -24,15 +24,13 @@ public class Vector {
 
     public Vector(int dimension, double[] components) {
         if (dimension <= 0) {
-            throw new IllegalArgumentException(dimension + " - недопустимое значение размерности, " +
-                    "допустимые значения начинаются с 1");
+            throw new IllegalArgumentException("Недопустимое значение " + dimension +
+                    " параметра 'размерность вектора', допустимые значения начинаются с 1");
         }
 
         int minDimension = Math.min(dimension, components.length);
 
-        this.components = new double[dimension];
-
-        System.arraycopy(components, 0, this.components, 0, minDimension);
+        this.components = Arrays.copyOf(components, minDimension);
     }
 
     public int getDimension() {
@@ -40,7 +38,9 @@ public class Vector {
     }
 
     public void add(Vector vector) {
-        components = Arrays.copyOf(components, vector.components.length);
+        if (components.length < vector.components.length) {
+            components = Arrays.copyOf(components, vector.components.length);
+        }
 
         for (int i = 0; i < vector.components.length; i++) {
             components[i] += vector.components[i];
@@ -48,7 +48,9 @@ public class Vector {
     }
 
     public void subtract(Vector vector) {
-        components = Arrays.copyOf(components, vector.components.length);
+        if (components.length < vector.components.length) {
+            components = Arrays.copyOf(components, vector.components.length);
+        }
 
         for (int i = 0; i < vector.components.length; i++) {
             components[i] -= vector.components[i];
@@ -94,19 +96,19 @@ public class Vector {
     }
 
     public static Vector getSum(Vector vector1, Vector vector2) {
-        Vector resultingVector = new Vector(vector1);
+        Vector resultVector = new Vector(vector1);
 
-        resultingVector.add(vector2);
+        resultVector.add(vector2);
 
-        return resultingVector;
+        return resultVector;
     }
 
     public static Vector getDifference(Vector vector1, Vector vector2) {
-        Vector resultingVector = new Vector(vector1);
+        Vector resultVector = new Vector(vector1);
 
-        resultingVector.subtract(vector2);
+        resultVector.subtract(vector2);
 
-        return resultingVector;
+        return resultVector;
     }
 
     public static double getScalarProduct(Vector vector1, Vector vector2) {
