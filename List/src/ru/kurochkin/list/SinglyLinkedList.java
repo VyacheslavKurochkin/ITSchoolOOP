@@ -1,175 +1,193 @@
 package ru.kurochkin.list;
 
-import ru.kurochkin.list_item.ListItem;
+import java.util.NoSuchElementException;
 
-public class SinglyLinkedList<T> {
-    private ListItem<T> head;
-    private int count;
+public class SinglyLinkedList<E> {
+    private ListItem<E> head;
+    private int length;
 
-    public SinglyLinkedList(T[] arrayData) {
-        count = 0;
+    public SinglyLinkedList() {
+        length = 0;
+    }
 
-        if (arrayData.length == 0) {
-            return;
-        }
-
-        for (int i = arrayData.length - 1; i >= 0; i--) {
-            addHead(arrayData[i]);
+    public SinglyLinkedList(E[] array) {
+        for (int i = array.length - 1; i >= 0; i--) {
+            addFirst(array[i]);
         }
     }
 
-    public SinglyLinkedList(ListItem<T> head) {
-        this.head = head;
-        count = 1;
+    public SinglyLinkedList(E data) {
+        addFirst(data);
+
+        length = 1;
     }
 
-    public int getSize() {
-        return count;
+    public int getLength() {
+        return length;
     }
 
-    public T getHeadData() {
+    public E getFirst() {
+        if (head == null) {
+            throw new NoSuchElementException("Список пуст.");
+        }
+
         return head.getData();
     }
 
-    private void checkArgumentIndex(int index) {
-        if (index < 0 || index > count - 1) {
-            throw new IllegalArgumentException("Индекс " + index + " за пределами диапазона допустимых значений " +
-                    "[0.." + (count - 1) + "]");
+    private void checkIndex(int index) {
+        if (index < 0 || index >= length) {
+            throw new IndexOutOfBoundsException("Индекс " + index + " за пределами диапазона допустимых значений " +
+                    "[0.." + (length - 1) + "]");
         }
     }
 
-    public ListItem<T> getItem(int index) {
-        checkArgumentIndex(index);
-
-        ListItem<T> listItem = head;
+    private ListItem<E> getItem(int index) {
+        ListItem<E> item = head;
 
         for (int i = 0; i < index; i++) {
-            listItem = listItem.getNext();
+            item = item.getNext();
         }
 
-        return listItem;
+        return item;
     }
 
-    public T getData(int index) {
-        checkArgumentIndex(index);
+    public E get(int index) {
+        checkIndex(index);
 
         return getItem(index).getData();
     }
 
-    public T setData(int index, T data) {
-        checkArgumentIndex(index);
+    public E set(int index, E data) {
+        checkIndex(index);
 
-        ListItem<T> listItem = getItem(index);
+        ListItem<E> item = getItem(index);
 
-        T previousData = listItem.getData();
-        listItem.setData(data);
+        E oldData = item.getData();
+        item.setData(data);
 
-        return previousData;
+        return oldData;
     }
 
-    public T remove(int index) {
-        checkArgumentIndex(index);
+    public E remove(int index) {
+        checkIndex(index);
 
         if (index == 0) {
-            return removeHead();
+            return removeFirst();
         }
 
-        ListItem<T> previous = head;
-        ListItem<T> next = head.getNext();
+        ListItem<E> previousItem = getItem(index - 1);
+        E oldData = previousItem.getNext().getData();
+        previousItem.setNext(previousItem.getNext().getNext());
 
-        for (int i = 1; i < index; i++) {
-            previous = next;
-            next = next.getNext();
-        }
+        length--;
 
-        previous.setNext(next.getNext());
-
-        count--;
-
-        return next.getData();
+        return oldData;
     }
 
-    public void addHead(T data) {
+    public void addFirst(E data) {
         head = new ListItem<>(data, head);
-        count++;
+        length++;
     }
 
-    public void add(int index, T data) {
-        checkArgumentIndex(index);
+    public void add(int index, E data) {
+        checkIndex(index);
 
         if (index == 0) {
-            addHead(data);
+            addFirst(data);
 
             return;
         }
 
-        ListItem<T> previous = getItem(index - 1);
-        ListItem<T> newItem = new ListItem<>(data, previous.getNext());
-        previous.setNext(newItem);
+        ListItem<E> previousItem = getItem(index - 1);
+        previousItem.setNext(new ListItem<>(data, previousItem.getNext()));
 
-        count++;
+        length++;
     }
 
-    public boolean remove(T data) {
-        ListItem<T> previous = head;
+    public boolean remove(E data) {
+        ListItem<E> previousItem = null;
+        ListItem<E> currentItem = head;
 
-        for (ListItem<T> current = head; current != null; previous = current, current = current.getNext()) {
-            if (current.getData().equals(data)) {
-                previous.setNext(current.getNext());
-
-                count--;
-
-                return true;
+        for (; currentItem != null; previousItem = currentItem, currentItem = currentItem.getNext()) {
+            if (currentItem.getData() == null) {
+                if (data == null) {
+                    break;
+                }
+            } else if (currentItem.getData().equals(data)) {
+                break;
             }
+        }
+
+        if (currentItem != null) {
+            if (previousItem == null) {
+                removeFirst();
+            } else {
+                previousItem.setNext(currentItem.getNext());
+
+                length--;
+            }
+
+            return true;
         }
 
         return false;
     }
 
-    public T removeHead() {
-        if (count < 1) {
-            throw new IndexOutOfBoundsException("Удалить нельзя. Список элементов пуст");
+    public E removeFirst() {
+        if (length < 1) {
+            throw new NoSuchElementException("Удалить нельзя. Список элементов пуст");
         }
 
-        T previousData = head.getData();
+        E removedData = head.getData();
         head = head.getNext();
-        count--;
+        length--;
 
-        return previousData;
+        return removedData;
     }
 
     public void reverse() {
-        ListItem<T> previous = null;
-        ListItem<T> next;
+        ListItem<E> previousItem = null;
 
-        for (ListItem<T> current = head; current != null; previous = current, current = next) {
-            next = current.getNext();
-            current.setNext(previous);
+        for (ListItem<E> currentItem = head; currentItem != null; ) {
+            ListItem<E> nextItem = currentItem.getNext();
+            currentItem.setNext(previousItem);
+            previousItem = currentItem;
+            currentItem = nextItem;
         }
 
-        head = previous;
+        head = previousItem;
     }
 
-    public SinglyLinkedList<T> copy() {
-        SinglyLinkedList<T> list = new SinglyLinkedList<>(new ListItem<>(head.getData()));
-
-        for (ListItem<T> current = head.getNext(); current != null; current = current.getNext()) {
-            list.addHead(current.getData());
+    public SinglyLinkedList<E> copy() {
+        if (length == 0) {
+            return new SinglyLinkedList<>();
         }
 
-        list.reverse();
+        SinglyLinkedList<E> newList = new SinglyLinkedList<>(head.getData());
+        ListItem<E> newListCurrentItem = newList.head;
 
-        return list;
+        for (ListItem<E> currentItem = head.getNext(); currentItem != null; currentItem = currentItem.getNext(),
+                newListCurrentItem = newListCurrentItem.getNext()) {
+            newListCurrentItem.setNext(new ListItem<>(currentItem.getData()));
+        }
+
+        newList.length = length;
+
+        return newList;
     }
 
     @Override
     public String toString() {
+        if (length == 0) {
+            return "{}";
+        }
+
         StringBuilder sb = new StringBuilder();
 
         sb.append('{');
 
-        for (ListItem<T> current = head; current != null; current = current.getNext()) {
-            sb.append(current.getData()).append(", ");
+        for (ListItem<E> currentItem = head; currentItem != null; currentItem = currentItem.getNext()) {
+            sb.append(currentItem.getData()).append(", ");
         }
 
         sb.delete(sb.length() - 2, sb.length());

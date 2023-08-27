@@ -1,12 +1,11 @@
-package ru.kurochkin.list_item;
+package ru.kurochkin.list;
 
-public class ListItem<E> {
+class ListItem<E> {
     private E data;
     private ListItem<E> next;
 
     public ListItem(E data) {
         this.data = data;
-        next = null;
     }
 
     public ListItem(E data, ListItem<E> next) {
