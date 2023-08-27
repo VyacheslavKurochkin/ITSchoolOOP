@@ -1,29 +1,34 @@
 package ru.kurochkin.arraylisthome;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Scanner;
 
 public class ArrayListHome {
+    public static ArrayList<String> getFileLines(String fileName) throws IOException {
+        ArrayList<String> lines = new ArrayList<>();
 
-    public static void loadFileRows(String fileName, ArrayList<String> rows) throws FileNotFoundException {
-        try (Scanner scanner = new Scanner(new FileInputStream(fileName))) {
-            while (scanner.hasNextLine()) {
-                rows.add(scanner.nextLine());
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                lines.add(line);
             }
+        } catch (IOException exception) {
+            throw exception;
         }
+
+        return lines;
     }
 
     public static void removeEvenNumbers(ArrayList<Integer> numbers) {
-        int index = 0;
+        int i = 0;
 
-        while (index < numbers.size()) {
-            if (numbers.get(index) % 2 == 0) {
-                numbers.remove(index);
+        while (i < numbers.size()) {
+            if (numbers.get(i) % 2 == 0) {
+                numbers.remove(i);
             } else {
-                ++index;
+                ++i;
             }
         }
     }
@@ -41,16 +46,18 @@ public class ArrayListHome {
     }
 
     public static void main(String[] args) {
-        ArrayList<String> rows = new ArrayList<>();
+        ArrayList<String> lines = null;
 
         try {
-            loadFileRows("ArrayListHome\\input.txt", rows);
-        } catch (FileNotFoundException e) {
+            lines = getFileLines("ArrayListHome\\input.txt");
+        } catch (FileNotFoundException exception) {
             System.out.println("Файл input.txt не найден");
+        } catch (IOException exception) {
+            System.out.println(exception.getMessage());
         }
 
         System.out.println("Список строк из файла:");
-        System.out.println(rows);
+        System.out.println(lines);
 
         ArrayList<Integer> numbers = new ArrayList<>(Arrays.asList(1, 21, 30, 4, 5, 5, 67, 1, 5, 8));
         removeEvenNumbers(numbers);
