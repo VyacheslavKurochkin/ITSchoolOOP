@@ -4,7 +4,7 @@ import ru.kurochkin.vector.Vector;
 
 public class Main {
     public static void main(String[] args) {
-        Vector vector1 = new Vector(3, new double[]{2, 4, 6, 40});
+        Vector vector1 = new Vector(5, new double[]{1, 8, 3, 0});
         Vector vector2 = new Vector(new double[]{3, 4, 5, 1, 2, 3});
         Vector vector3 = new Vector(vector1);
 

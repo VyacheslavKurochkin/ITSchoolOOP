@@ -28,9 +28,7 @@ public class Vector {
                     " параметра 'размерность вектора', допустимые значения начинаются с 1");
         }
 
-        int minDimension = Math.min(dimension, components.length);
-
-        this.components = Arrays.copyOf(components, minDimension);
+        this.components = Arrays.copyOf(components, dimension);
     }
 
     public int getDimension() {
