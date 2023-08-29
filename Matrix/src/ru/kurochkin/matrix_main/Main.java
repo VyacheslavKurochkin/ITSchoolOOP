@@ -19,22 +19,28 @@ public class Main {
         System.out.println(vector1);
 
         Matrix matrix3 = Matrix.getProduct(matrix1, matrix2);
+        System.out.println();
         System.out.println("Умножение матриц");
         System.out.println("матрица3 = матрица1 * матрица2: " + matrix3);
 
+        System.out.println();
         System.out.println("Вычитание матриц");
         System.out.println("матрица3 - матрица2: " + Matrix.getDifference(matrix3, matrix2));
 
-        System.out.println("Транспонирование");
         matrix2.transpose();
+        System.out.println();
+        System.out.println("Транспонирование");
         System.out.println("матрица2: " + matrix2);
 
+        System.out.println();
         System.out.println("Детерминант матрица1: " + matrix1.getDeterminant());
 
         matrix2.multiplyByScalar(0.5);
+        System.out.println();
         System.out.println("Умножение на скаляр");
         System.out.println("матрица2 * 0.5 : " + matrix2);
 
+        System.out.println();
         System.out.println("Умножение на вектор");
         System.out.println("матрица2 * вектор1: " + matrix2.multiplyByVector(vector1));
     }
