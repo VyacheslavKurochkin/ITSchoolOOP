@@ -210,7 +210,7 @@ public class Matrix {
     }
 
     private static void checkDimensions(Matrix matrix1, Matrix matrix2) {
-        if (matrix1.rows.length == matrix2.rows.length && matrix1.getColumnsCount() == matrix2.getColumnsCount()) {
+        if (matrix1.rows.length != matrix2.rows.length || matrix1.getColumnsCount() != matrix2.getColumnsCount()) {
             throw new IllegalArgumentException("Размерности матриц " + matrix1.rows.length + "*" + matrix1.getColumnsCount() +
                     " и " + matrix2.rows.length + "*" + matrix2.getColumnsCount() + " не совпадают по количеству строк либо столбцов");
         }
