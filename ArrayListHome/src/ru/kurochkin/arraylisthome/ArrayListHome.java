@@ -48,10 +48,10 @@ public class ArrayListHome {
 
         try {
             lines = getFileLines("ArrayListHome\\input.txt");
-        } catch (FileNotFoundException exception) {
+        } catch (FileNotFoundException e) {
             System.out.println("Файл input.txt не найден");
-        } catch (IOException exception) {
-            System.out.println(exception.getMessage());
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
         }
 
         System.out.println("Список строк из файла:");
