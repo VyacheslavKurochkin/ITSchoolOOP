@@ -14,8 +14,6 @@ public class ArrayListHome {
             while ((line = reader.readLine()) != null) {
                 lines.add(line);
             }
-        } catch (IOException exception) {
-            throw exception;
         }
 
         return lines;
@@ -62,9 +60,11 @@ public class ArrayListHome {
         ArrayList<Integer> numbers = new ArrayList<>(Arrays.asList(1, 21, 30, 4, 5, 5, 67, 1, 5, 8));
         removeEvenNumbers(numbers);
 
+        System.out.println();
         System.out.println("Из списка удалены четные элементы:");
         System.out.println(numbers);
 
+        System.out.println();
         System.out.println("Копия списка без повторяющихся элементов:");
         ArrayList<Integer> numbersWithoutDuplicates = getListWithoutDuplicates(numbers);
         System.out.println(numbersWithoutDuplicates);
