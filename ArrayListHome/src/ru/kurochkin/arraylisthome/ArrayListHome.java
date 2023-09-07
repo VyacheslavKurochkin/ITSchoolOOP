@@ -44,18 +44,18 @@ public class ArrayListHome {
     }
 
     public static void main(String[] args) {
-        ArrayList<String> lines = null;
+        String inputFileName = "ArrayListHome\\input.txt";
 
         try {
-            lines = getFileLines("ArrayListHome\\input.txt");
+            ArrayList<String> lines = getFileLines(inputFileName);
+
+            System.out.println("Список строк из файла:");
+            System.out.println(lines);
         } catch (FileNotFoundException e) {
-            System.out.println("Файл input.txt не найден");
+            System.out.println("Файл \"" + inputFileName + "\" не найден");
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
-
-        System.out.println("Список строк из файла:");
-        System.out.println(lines);
 
         ArrayList<Integer> numbers = new ArrayList<>(Arrays.asList(1, 21, 30, 4, 5, 5, 67, 1, 5, 8));
         removeEvenNumbers(numbers);
