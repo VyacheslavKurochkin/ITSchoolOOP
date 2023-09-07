@@ -41,5 +41,8 @@ public class Main {
         System.out.println("Удаление элемента по значению:");
         list2.remove(Integer.valueOf(34));
         System.out.println("Из списка2 удален элемент по значению 34: " + list2);
+
+        list2.remove(null);
+        System.out.println("Из списка2 удален элемент по значению null: " + list2);
     }
 }

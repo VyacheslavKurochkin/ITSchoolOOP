@@ -1,16 +1,16 @@
 package ru.kurochkin.list;
 
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 public class SinglyLinkedList<E> {
     private ListItem<E> head;
     private int length;
 
     public SinglyLinkedList() {
-        length = 0;
     }
 
-    public SinglyLinkedList(E[] array) {
+    public SinglyLinkedList(E... array) {
         for (int i = array.length - 1; i >= 0; i--) {
             addFirst(array[i]);
         }
@@ -18,8 +18,6 @@ public class SinglyLinkedList<E> {
 
     public SinglyLinkedList(E data) {
         addFirst(data);
-
-        length = 1;
     }
 
     public int getLength() {
@@ -76,21 +74,25 @@ public class SinglyLinkedList<E> {
         }
 
         ListItem<E> previousItem = getItem(index - 1);
-        E oldData = previousItem.getNext().getData();
+        E removedData = previousItem.getNext().getData();
         previousItem.setNext(previousItem.getNext().getNext());
 
         length--;
 
-        return oldData;
+        return removedData;
     }
 
     public void addFirst(E data) {
         head = new ListItem<>(data, head);
+
         length++;
     }
 
     public void add(int index, E data) {
-        checkIndex(index);
+        if (index < 0 || index > length) {
+            throw new IndexOutOfBoundsException("Индекс " + index + " за пределами диапазона допустимых значений " +
+                    "[0.." + length + "]");
+        }
 
         if (index == 0) {
             addFirst(data);
@@ -109,32 +111,28 @@ public class SinglyLinkedList<E> {
         ListItem<E> currentItem = head;
 
         for (; currentItem != null; previousItem = currentItem, currentItem = currentItem.getNext()) {
-            if (currentItem.getData() == null) {
-                if (data == null) {
-                    break;
-                }
-            } else if (currentItem.getData().equals(data)) {
+            if (Objects.equals(data, currentItem.getData())) {
                 break;
             }
         }
 
-        if (currentItem != null) {
-            if (previousItem == null) {
-                removeFirst();
-            } else {
-                previousItem.setNext(currentItem.getNext());
-
-                length--;
-            }
-
-            return true;
+        if (currentItem == null) {
+            return false;
         }
 
-        return false;
+        if (previousItem == null) {
+            removeFirst();
+        } else {
+            previousItem.setNext(currentItem.getNext());
+
+            length--;
+        }
+
+        return true;
     }
 
     public E removeFirst() {
-        if (length < 1) {
+        if (head == null) {
             throw new NoSuchElementException("Удалить нельзя. Список элементов пуст");
         }
 
@@ -179,19 +177,19 @@ public class SinglyLinkedList<E> {
     @Override
     public String toString() {
         if (length == 0) {
-            return "{}";
+            return "[]";
         }
 
         StringBuilder sb = new StringBuilder();
 
-        sb.append('{');
+        sb.append('[');
 
         for (ListItem<E> currentItem = head; currentItem != null; currentItem = currentItem.getNext()) {
             sb.append(currentItem.getData()).append(", ");
         }
 
         sb.delete(sb.length() - 2, sb.length());
-        sb.append('}');
+        sb.append(']');
 
         return sb.toString();
     }
