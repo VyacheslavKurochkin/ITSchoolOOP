@@ -3,36 +3,33 @@ package ru.kurochkin.csv;
 import java.io.*;
 
 public class CsvToHtmlConverter {
-
-    public static final String htmlTagTableBegin = "<table border=\"1px\">";
-    public static final String htmlTagTableEnd = "</table>";
-    public static final String htmlTagTableRowBegin = "<tr>";
-    public static final String htmlTagTableRowEnd = "</tr>";
-    public static final String htmlTagTableCellBegin = "<td>";
-    public static final String htmlTagTableCellEnd = "</td>";
-    public static final String htmlTagLineSeparator = "<br/>";
-    public static final String tagOffset = "    ";
+    public static final String HTML_TAG_TABLE_BEGIN = "<table border=\"1px\">";
+    public static final String HTML_TAG_TABLE_END = "</table>";
+    public static final String HTML_TAG_TABLE_ROW_BEGIN = "<tr>";
+    public static final String HTML_TAG_TABLE_ROW_END = "</tr>";
+    public static final String HTML_TAG_TABLE_CELL_BEGIN = "<td>";
+    public static final String HTML_TAG_TABLE_CELL_END = "</td>";
+    public static final String HTML_TAG_LINE_SEPARATOR = "<br/>";
+    public static final String TAG_OFFSET = "\t";
 
     public static void writeHtmlCharacter(BufferedWriter writer, int character) throws IOException {
         switch (character) {
-            case '<':
-                writer.write("&lt;");
-                break;
-            case '>':
-                writer.write("&gt;");
-                break;
-            case '&':
-                writer.write("&amp;");
-                break;
-            default:
-                writer.write(character);
+            case '<' -> writer.write("&lt;");
+            case '>' -> writer.write("&gt;");
+            case '&' -> writer.write("&amp;");
+            default -> writer.write(character);
         }
     }
 
     public static void writeHtmlBegin(BufferedWriter writer) throws IOException {
-        writer.write("<!DOCTYPE html>" + System.lineSeparator() + "<html>" + System.lineSeparator() + "<head>" +
-                System.lineSeparator() + tagOffset + "<meta charset=\"UTF-8\">" + System.lineSeparator() + "</head>" +
-                System.lineSeparator() + "<body>" + System.lineSeparator());
+        writer.write(
+                "<!DOCTYPE html>" + System.lineSeparator() +
+                        "<html>" + System.lineSeparator() +
+                        "<head>" + System.lineSeparator() +
+                        TAG_OFFSET + "<meta charset=\"UTF-8\">" +
+                        System.lineSeparator() + "</head>" +
+                        System.lineSeparator() + "<body>" +
+                        System.lineSeparator());
     }
 
     public static void writeHtmlEnd(BufferedWriter writer) throws IOException {
@@ -44,7 +41,7 @@ public class CsvToHtmlConverter {
              BufferedWriter writer = new BufferedWriter(new FileWriter(outputFileName))) {
             writeHtmlBegin(writer);
 
-            writer.write(tagOffset + htmlTagTableBegin);
+            writer.write(TAG_OFFSET + HTML_TAG_TABLE_BEGIN);
 
             boolean isCellBegin = false;
             boolean isRowBegin = false;
@@ -52,44 +49,42 @@ public class CsvToHtmlConverter {
             boolean isQuotePreviousCharacter = false;
 
             String lineSeparator = System.lineSeparator();
-            String rowOffset = tagOffset.repeat(2);
-            String cellOffset = tagOffset.repeat(3);
+            String rowOffset = TAG_OFFSET.repeat(2);
+            String cellOffset = TAG_OFFSET.repeat(3);
 
             String line;
 
             while ((line = reader.readLine()) != null) {
-                char[] lineCharacters = line.toCharArray();
-
-                if (lineCharacters.length == 0) {
+                if (line.length() == 0) {
                     continue;
                 }
 
                 if ((isQuotePreviousCharacter || !isQuotedCell) && isRowBegin) {
-                    writer.write(htmlTagTableCellEnd);
-                    writer.write(lineSeparator + rowOffset + htmlTagTableRowEnd);
+                    writer.write(HTML_TAG_TABLE_CELL_END);
+                    writer.write(lineSeparator + rowOffset + HTML_TAG_TABLE_ROW_END);
 
                     isCellBegin = false;
                     isRowBegin = false;
                     isQuotePreviousCharacter = false;
                     isQuotedCell = false;
                 } else if (isRowBegin) {
-                    writer.write(htmlTagLineSeparator);
+                    writer.write(HTML_TAG_LINE_SEPARATOR);
                 }
 
                 if (!isRowBegin) {
-                    writer.write(lineSeparator + rowOffset + htmlTagTableRowBegin);
-                    writer.write(lineSeparator + cellOffset + htmlTagTableCellBegin);
+                    writer.write(lineSeparator + rowOffset + HTML_TAG_TABLE_ROW_BEGIN);
+                    writer.write(lineSeparator + cellOffset + HTML_TAG_TABLE_CELL_BEGIN);
 
                     isRowBegin = true;
                 }
 
                 int i = 0;
 
-                while (i < lineCharacters.length) {
-                    if (lineCharacters[i] == '"') {
+                while (i < line.length()) {
+                    if (line.charAt(i) == '"') {
                         if (isCellBegin) {
                             if (isQuotePreviousCharacter) {
-                                writeHtmlCharacter(writer, lineCharacters[i]);
+                                writeHtmlCharacter(writer, line.charAt(i));
 
                                 isQuotePreviousCharacter = false;
                             } else {
@@ -99,20 +94,20 @@ public class CsvToHtmlConverter {
                             isQuotedCell = true;
                             isCellBegin = true;
                         }
-                    } else if (lineCharacters[i] == ',') {
+                    } else if (line.charAt(i) == ',') {
                         if (isQuotePreviousCharacter || !isQuotedCell) {
-                            writer.write(htmlTagTableCellEnd);
-                            writer.write(lineSeparator + cellOffset + htmlTagTableCellBegin);
+                            writer.write(HTML_TAG_TABLE_CELL_END);
+                            writer.write(lineSeparator + cellOffset + HTML_TAG_TABLE_CELL_BEGIN);
 
                             isCellBegin = false;
                             isQuotedCell = false;
                         } else {
-                            writeHtmlCharacter(writer, lineCharacters[i]);
+                            writeHtmlCharacter(writer, line.charAt(i));
                         }
 
                         isQuotePreviousCharacter = false;
                     } else {
-                        writeHtmlCharacter(writer, lineCharacters[i]);
+                        writeHtmlCharacter(writer, line.charAt(i));
 
                         isCellBegin = true;
                     }
@@ -122,18 +117,16 @@ public class CsvToHtmlConverter {
             }
 
             if (isCellBegin) {
-                writer.write(htmlTagTableCellEnd);
+                writer.write(HTML_TAG_TABLE_CELL_END);
             }
 
             if (isRowBegin) {
-                writer.write(lineSeparator + rowOffset + htmlTagTableRowEnd);
+                writer.write(lineSeparator + rowOffset + HTML_TAG_TABLE_ROW_END);
             }
 
-            writer.write(lineSeparator + tagOffset + htmlTagTableEnd + lineSeparator);
+            writer.write(lineSeparator + TAG_OFFSET + HTML_TAG_TABLE_END + lineSeparator);
 
             writeHtmlEnd(writer);
-        } catch (IOException exception) {
-            throw exception;
         }
     }
 
@@ -167,6 +160,10 @@ public class CsvToHtmlConverter {
 
         if (errorMessage.length() > 0) {
             errorMessage.insert(0, "Не заданы обязательные параметры: ");
+            errorMessage.append(System.lineSeparator()).append("Преобразование таблицы из файла формата CSV в файл HTML").
+                    append(System.lineSeparator()).append("\t").append("-input имя файла в формате CSV").
+                    append(System.lineSeparator()).append("\t").append("-output имя файла результата в формате HTML").
+                    append(System.lineSeparator()).append("Пример запуска: -input \"CSV\\\\input.csv\" -output \"CSV\\\\output.html\"");
 
             System.out.println(errorMessage);
         } else {
@@ -174,8 +171,8 @@ public class CsvToHtmlConverter {
                 convertCsvToHtml(inputFileName, outputFileName);
             } catch (FileNotFoundException exception) {
                 System.out.println("Файл " + inputFileName + " не найден");
-            } catch (IOException exception) {
-                System.out.println(exception.getMessage());
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
             }
         }
     }
