@@ -3,8 +3,8 @@ package ru.kurochkin.matrix;
 import ru.kurochkin.vector.*;
 
 public class Matrix {
-    private Vector[] rows;
     private static final double EPSILON = 1.0e-10;
+    private Vector[] rows;
 
     public Matrix(int rowsCount, int columnsCount) {
         if (rowsCount <= 0 || columnsCount <= 0) {
@@ -108,6 +108,11 @@ public class Matrix {
     }
 
     public Vector getColumn(int columnIndex) {
+        if (columnIndex < 0 || columnIndex > getColumnsCount()) {
+            throw new IndexOutOfBoundsException("Индекс столбца " + columnIndex + " за пределами диапазона допустимых значений " +
+                    "[0.." + (getColumnsCount() - 1) + "]");
+        }
+
         Vector column = new Vector(rows.length);
 
         for (int i = 0; i < rows.length; i++) {
@@ -135,7 +140,7 @@ public class Matrix {
 
     public double getDeterminant() {
         if (rows.length != getColumnsCount()) {
-            throw new UnsupportedOperationException("Размерность матрицы " + rows.length + ", " + getColumnsCount() +
+            throw new UnsupportedOperationException("Размерность матрицы " + rows.length + "*" + getColumnsCount() +
                     " не позволяет вычислить определитель, так как количество строк не равно количеству столбцов");
         }
 
@@ -209,7 +214,7 @@ public class Matrix {
         return resultVector;
     }
 
-    private static void checkDimensions(Matrix matrix1, Matrix matrix2) {
+    private static void checkEqualDimensions(Matrix matrix1, Matrix matrix2) {
         if (matrix1.rows.length != matrix2.rows.length || matrix1.getColumnsCount() != matrix2.getColumnsCount()) {
             throw new IllegalArgumentException("Размерности матриц " + matrix1.rows.length + "*" + matrix1.getColumnsCount() +
                     " и " + matrix2.rows.length + "*" + matrix2.getColumnsCount() + " не совпадают по количеству строк либо столбцов");
@@ -217,7 +222,7 @@ public class Matrix {
     }
 
     public void add(Matrix matrix) {
-        checkDimensions(this, matrix);
+        checkEqualDimensions(this, matrix);
 
         for (int i = 0; i < rows.length; i++) {
             rows[i].add(matrix.rows[i]);
@@ -225,7 +230,7 @@ public class Matrix {
     }
 
     public void subtract(Matrix matrix) {
-        checkDimensions(this, matrix);
+        checkEqualDimensions(this, matrix);
 
         for (int i = 0; i < rows.length; i++) {
             rows[i].subtract(matrix.rows[i]);
@@ -233,7 +238,7 @@ public class Matrix {
     }
 
     public static Matrix getSum(Matrix matrix1, Matrix matrix2) {
-        checkDimensions(matrix1, matrix2);
+        checkEqualDimensions(matrix1, matrix2);
 
         Matrix resultMatrix = new Matrix(matrix1);
         resultMatrix.add(matrix2);
@@ -242,7 +247,7 @@ public class Matrix {
     }
 
     public static Matrix getDifference(Matrix matrix1, Matrix matrix2) {
-        checkDimensions(matrix1, matrix2);
+        checkEqualDimensions(matrix1, matrix2);
 
         Matrix resultMatrix = new Matrix(matrix1);
         resultMatrix.subtract(matrix2);
@@ -269,7 +274,6 @@ public class Matrix {
                 resultMatrix.rows[i].setComponent(j, Vector.getScalarProduct(matrix1.rows[i], columns[j]));
             }
         }
-
 
         return resultMatrix;
     }
