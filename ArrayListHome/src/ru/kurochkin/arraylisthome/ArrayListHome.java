@@ -6,17 +6,17 @@ import java.util.Arrays;
 
 public class ArrayListHome {
     public static ArrayList<String> getFileLines(String fileName) throws IOException {
-        ArrayList<String> lines = new ArrayList<>();
-
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+            ArrayList<String> lines = new ArrayList<>();
+
             String line;
 
             while ((line = reader.readLine()) != null) {
                 lines.add(line);
             }
-        }
 
-        return lines;
+            return lines;
+        }
     }
 
     public static void removeEvenNumbers(ArrayList<Integer> numbers) {
@@ -54,7 +54,7 @@ public class ArrayListHome {
         } catch (FileNotFoundException e) {
             System.out.println("Файл \"" + inputFileName + "\" не найден");
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            System.out.println("Процедура getFileLines. Ошибка: " + e.getMessage());
         }
 
         ArrayList<Integer> numbers = new ArrayList<>(Arrays.asList(1, 21, 30, 4, 5, 5, 67, 1, 5, 8));
@@ -64,9 +64,9 @@ public class ArrayListHome {
         System.out.println("Из списка удалены четные элементы:");
         System.out.println(numbers);
 
+        ArrayList<Integer> numbersWithoutDuplicates = getListWithoutDuplicates(numbers);
         System.out.println();
         System.out.println("Копия списка без повторяющихся элементов:");
-        ArrayList<Integer> numbersWithoutDuplicates = getListWithoutDuplicates(numbers);
         System.out.println(numbersWithoutDuplicates);
     }
 }
