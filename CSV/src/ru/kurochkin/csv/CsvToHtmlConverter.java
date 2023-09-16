@@ -32,7 +32,7 @@ public class CsvToHtmlConverter {
 
     public static void writeHtmlEnd(PrintWriter writer) {
         writer.println("</body>");
-        writer.println("</html>");
+        writer.print("</html>");
     }
 
     public static void convertCsvToHtml(String inputFileName, String outputFileName) throws IOException {
