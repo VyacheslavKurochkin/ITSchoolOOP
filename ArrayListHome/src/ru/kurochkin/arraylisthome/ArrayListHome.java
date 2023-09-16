@@ -65,6 +65,7 @@ public class ArrayListHome {
         System.out.println(numbers);
 
         ArrayList<Integer> numbersWithoutDuplicates = getListWithoutDuplicates(numbers);
+
         System.out.println();
         System.out.println("Копия списка без повторяющихся элементов:");
         System.out.println(numbersWithoutDuplicates);
