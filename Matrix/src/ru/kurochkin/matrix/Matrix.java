@@ -108,7 +108,7 @@ public class Matrix {
     }
 
     public Vector getColumn(int columnIndex) {
-        if (columnIndex < 0 || columnIndex > getColumnsCount()) {
+        if (columnIndex < 0 || columnIndex > getColumnsCount() - 1) {
             throw new IndexOutOfBoundsException("Индекс столбца " + columnIndex + " за пределами диапазона допустимых значений " +
                     "[0.." + (getColumnsCount() - 1) + "]");
         }
@@ -214,15 +214,15 @@ public class Matrix {
         return resultVector;
     }
 
-    private static void checkEqualDimensions(Matrix matrix1, Matrix matrix2) {
+    private static void checkDimensionsEquality(Matrix matrix1, Matrix matrix2) {
         if (matrix1.rows.length != matrix2.rows.length || matrix1.getColumnsCount() != matrix2.getColumnsCount()) {
             throw new IllegalArgumentException("Размерности матриц " + matrix1.rows.length + "*" + matrix1.getColumnsCount() +
-                    " и " + matrix2.rows.length + "*" + matrix2.getColumnsCount() + " не совпадают по количеству строк либо столбцов");
+                    " и " + matrix2.rows.length + "*" + matrix2.getColumnsCount() + " не совпадают");
         }
     }
 
     public void add(Matrix matrix) {
-        checkEqualDimensions(this, matrix);
+        checkDimensionsEquality(this, matrix);
 
         for (int i = 0; i < rows.length; i++) {
             rows[i].add(matrix.rows[i]);
@@ -230,7 +230,7 @@ public class Matrix {
     }
 
     public void subtract(Matrix matrix) {
-        checkEqualDimensions(this, matrix);
+        checkDimensionsEquality(this, matrix);
 
         for (int i = 0; i < rows.length; i++) {
             rows[i].subtract(matrix.rows[i]);
@@ -238,7 +238,7 @@ public class Matrix {
     }
 
     public static Matrix getSum(Matrix matrix1, Matrix matrix2) {
-        checkEqualDimensions(matrix1, matrix2);
+        checkDimensionsEquality(matrix1, matrix2);
 
         Matrix resultMatrix = new Matrix(matrix1);
         resultMatrix.add(matrix2);
@@ -247,7 +247,7 @@ public class Matrix {
     }
 
     public static Matrix getDifference(Matrix matrix1, Matrix matrix2) {
-        checkEqualDimensions(matrix1, matrix2);
+        checkDimensionsEquality(matrix1, matrix2);
 
         Matrix resultMatrix = new Matrix(matrix1);
         resultMatrix.subtract(matrix2);
@@ -265,7 +265,7 @@ public class Matrix {
 
         Vector[] columns = new Vector[resultMatrix.getColumnsCount()];
 
-        for (int i = 0; i < resultMatrix.getColumnsCount(); i++) {
+        for (int i = 0; i < matrix2.getColumnsCount(); i++) {
             columns[i] = matrix2.getColumn(i);
         }
 
