@@ -31,8 +31,8 @@ public class CsvToHtmlConverter {
     }
 
     public static void writeHtmlEnd(PrintWriter writer) {
-        writer.write("</body>");
-        writer.write("</html>");
+        writer.println("</body>");
+        writer.println("</html>");
     }
 
     public static void convertCsvToHtml(String inputFileName, String outputFileName) throws IOException {
@@ -40,14 +40,13 @@ public class CsvToHtmlConverter {
              PrintWriter writer = new PrintWriter(outputFileName)) {
             writeHtmlBegin(writer);
 
-            writer.write(TAG_OFFSET + HTML_TAG_TABLE_BEGIN);
+            writer.println(TAG_OFFSET + HTML_TAG_TABLE_BEGIN);
 
             boolean isCellBegin = false;
             boolean isRowBegin = false;
             boolean isQuotedCell = false;
             boolean isQuotePreviousCharacter = false;
 
-            String lineSeparator = System.lineSeparator();
             String rowOffset = TAG_OFFSET.repeat(2);
             String cellOffset = TAG_OFFSET.repeat(3);
 
@@ -59,8 +58,8 @@ public class CsvToHtmlConverter {
                 }
 
                 if ((isQuotePreviousCharacter || !isQuotedCell) && isRowBegin) {
-                    writer.write(HTML_TAG_TABLE_CELL_END);
-                    writer.write(lineSeparator + rowOffset + HTML_TAG_TABLE_ROW_END);
+                    writer.println(HTML_TAG_TABLE_CELL_END);
+                    writer.print(rowOffset + HTML_TAG_TABLE_ROW_END);
 
                     isCellBegin = false;
                     isRowBegin = false;
@@ -71,8 +70,8 @@ public class CsvToHtmlConverter {
                 }
 
                 if (!isRowBegin) {
-                    writer.write(lineSeparator + rowOffset + HTML_TAG_TABLE_ROW_BEGIN);
-                    writer.write(lineSeparator + cellOffset + HTML_TAG_TABLE_CELL_BEGIN);
+                    writer.println(rowOffset + HTML_TAG_TABLE_ROW_BEGIN);
+                    writer.print(cellOffset + HTML_TAG_TABLE_CELL_BEGIN);
 
                     isRowBegin = true;
                 }
@@ -95,8 +94,8 @@ public class CsvToHtmlConverter {
                         }
                     } else if (line.charAt(i) == ',') {
                         if (isQuotePreviousCharacter || !isQuotedCell) {
-                            writer.write(HTML_TAG_TABLE_CELL_END);
-                            writer.write(lineSeparator + cellOffset + HTML_TAG_TABLE_CELL_BEGIN);
+                            writer.println(HTML_TAG_TABLE_CELL_END);
+                            writer.print(cellOffset + HTML_TAG_TABLE_CELL_BEGIN);
 
                             isCellBegin = false;
                             isQuotedCell = false;
@@ -116,14 +115,14 @@ public class CsvToHtmlConverter {
             }
 
             if (isCellBegin) {
-                writer.write(HTML_TAG_TABLE_CELL_END);
+                writer.println(HTML_TAG_TABLE_CELL_END);
             }
 
             if (isRowBegin) {
-                writer.write(lineSeparator + rowOffset + HTML_TAG_TABLE_ROW_END);
+                writer.println(rowOffset + HTML_TAG_TABLE_ROW_END);
             }
 
-            writer.write(lineSeparator + TAG_OFFSET + HTML_TAG_TABLE_END + lineSeparator);
+            writer.println(TAG_OFFSET + HTML_TAG_TABLE_END);
 
             writeHtmlEnd(writer);
         }
