@@ -3,16 +3,16 @@ package ru.kurochkin.csv;
 import java.io.*;
 
 public class CsvToHtmlConverter {
-    public static final String HTML_TAG_TABLE_BEGIN = "<table border=\"1px\">";
-    public static final String HTML_TAG_TABLE_END = "</table>";
-    public static final String HTML_TAG_TABLE_ROW_BEGIN = "<tr>";
-    public static final String HTML_TAG_TABLE_ROW_END = "</tr>";
-    public static final String HTML_TAG_TABLE_CELL_BEGIN = "<td>";
-    public static final String HTML_TAG_TABLE_CELL_END = "</td>";
-    public static final String HTML_TAG_LINE_SEPARATOR = "<br/>";
-    public static final String TAG_OFFSET = "\t";
+    private static final String HTML_TAG_TABLE_BEGIN = "<table border=\"1px\">";
+    private static final String HTML_TAG_TABLE_END = "</table>";
+    private static final String HTML_TAG_TABLE_ROW_BEGIN = "<tr>";
+    private static final String HTML_TAG_TABLE_ROW_END = "</tr>";
+    private static final String HTML_TAG_TABLE_CELL_BEGIN = "<td>";
+    private static final String HTML_TAG_TABLE_CELL_END = "</td>";
+    private static final String HTML_TAG_LINE_SEPARATOR = "<br/>";
+    private static final String TAG_OFFSET = "\t";
 
-    public static void writeHtmlCharacter(BufferedWriter writer, int character) throws IOException {
+    public static void writeHtmlCharacter(PrintWriter writer, int character) {
         switch (character) {
             case '<' -> writer.write("&lt;");
             case '>' -> writer.write("&gt;");
@@ -21,24 +21,23 @@ public class CsvToHtmlConverter {
         }
     }
 
-    public static void writeHtmlBegin(BufferedWriter writer) throws IOException {
-        writer.write(
-                "<!DOCTYPE html>" + System.lineSeparator() +
-                        "<html>" + System.lineSeparator() +
-                        "<head>" + System.lineSeparator() +
-                        TAG_OFFSET + "<meta charset=\"UTF-8\">" +
-                        System.lineSeparator() + "</head>" +
-                        System.lineSeparator() + "<body>" +
-                        System.lineSeparator());
+    public static void writeHtmlBegin(PrintWriter writer) {
+        writer.println("<!DOCTYPE html>");
+        writer.println("<html>");
+        writer.println("<head>");
+        writer.println(TAG_OFFSET + "<meta charset=\"UTF-8\">");
+        writer.println("</head>");
+        writer.println("<body>");
     }
 
-    public static void writeHtmlEnd(BufferedWriter writer) throws IOException {
-        writer.write("</body>" + System.lineSeparator() + "</html>");
+    public static void writeHtmlEnd(PrintWriter writer) {
+        writer.write("</body>");
+        writer.write("</html>");
     }
 
     public static void convertCsvToHtml(String inputFileName, String outputFileName) throws IOException {
         try (BufferedReader reader = new BufferedReader(new FileReader(inputFileName));
-             BufferedWriter writer = new BufferedWriter(new FileWriter(outputFileName))) {
+             PrintWriter writer = new PrintWriter(outputFileName)) {
             writeHtmlBegin(writer);
 
             writer.write(TAG_OFFSET + HTML_TAG_TABLE_BEGIN);
@@ -55,7 +54,7 @@ public class CsvToHtmlConverter {
             String line;
 
             while ((line = reader.readLine()) != null) {
-                if (line.length() == 0) {
+                if (line.isEmpty()) {
                     continue;
                 }
 
@@ -151,14 +150,14 @@ public class CsvToHtmlConverter {
         }
 
         if (outputFileName == null) {
-            if (errorMessage.length() > 0) {
+            if (!errorMessage.isEmpty()) {
                 errorMessage.append(", ");
             }
 
             errorMessage.append("имя файла HTML");
         }
 
-        if (errorMessage.length() > 0) {
+        if (!errorMessage.isEmpty()) {
             errorMessage.insert(0, "Не заданы обязательные параметры: ");
             errorMessage.append(System.lineSeparator()).append("Преобразование таблицы из файла формата CSV в файл HTML").
                     append(System.lineSeparator()).append("\t").append("-input имя файла в формате CSV").
