@@ -128,7 +128,7 @@ public class ArrayList<E> implements List<E> {
     }
 
     @Override
-    public boolean containsAll(Collection collection) {
+    public boolean containsAll(Collection<?> collection) {
         if (collection.isEmpty()) {
             return false;
         }
@@ -154,7 +154,9 @@ public class ArrayList<E> implements List<E> {
             return (T[]) Arrays.copyOfRange(items, 0, size, array.getClass());
         }
 
-        array = (T[]) Arrays.copyOfRange(items, 0, size, array.getClass());
+        T[] itemsCopy = (T[]) Arrays.copyOfRange(items, 0, size, array.getClass());
+        System.arraycopy(itemsCopy, 0, array, 0, size);
+
         if (array.length > size) {
             array[size] = null;
         }
@@ -275,10 +277,6 @@ public class ArrayList<E> implements List<E> {
             }
         }
 
-        if (isDeleted) {
-            modCount++;
-        }
-
         return isDeleted;
     }
 
@@ -297,10 +295,6 @@ public class ArrayList<E> implements List<E> {
             } else {
                 i++;
             }
-        }
-
-        if (isChanged) {
-            modCount++;
         }
 
         return isChanged;

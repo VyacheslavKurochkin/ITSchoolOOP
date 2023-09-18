@@ -29,11 +29,11 @@ public class Main {
         System.out.println();
         System.out.println("Список чисел. Метод toArray:");
 
-        Integer[] arrayNumbers = {12, 13, 14, 15};
-        System.out.println("Запуск с параметром массив целых чисел: " + Arrays.toString(arrayNumbers));
+        Integer[] numbersArray = {12, 13, 14, 15, 77, 88, 99, 11};
+        System.out.println("Запуск с параметром массив целых чисел: " + Arrays.toString(numbersArray));
 
-        Integer[] resultArrayNumbers = numbers.toArray(arrayNumbers);
-        System.out.println("Результат: " + Arrays.toString(resultArrayNumbers));
+        Integer[] resultNumbersArray = numbers.toArray(numbersArray);
+        System.out.println("Результат: " + Arrays.toString(resultNumbersArray));
 
         System.out.println();
         System.out.println("Список строк. Метод retainAll:");
