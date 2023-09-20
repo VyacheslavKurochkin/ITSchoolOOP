@@ -10,8 +10,8 @@ public class ArrayList<E> implements List<E> {
     private int modCount;
 
     private class ArrayListIterator implements Iterator<E> {
-        int originalModCount;
-        int currentIndex = -1;
+        private int originalModCount;
+        private int currentIndex = -1;
 
         public ArrayListIterator() {
             originalModCount = modCount;
