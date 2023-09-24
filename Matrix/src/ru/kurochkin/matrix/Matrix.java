@@ -108,7 +108,7 @@ public class Matrix {
     }
 
     public Vector getColumn(int columnIndex) {
-        if (columnIndex < 0 || columnIndex > getColumnsCount() - 1) {
+        if (columnIndex < 0 || columnIndex >= getColumnsCount()) {
             throw new IndexOutOfBoundsException("Индекс столбца " + columnIndex + " за пределами диапазона допустимых значений " +
                     "[0.." + (getColumnsCount() - 1) + "]");
         }
@@ -263,15 +263,15 @@ public class Matrix {
 
         Matrix resultMatrix = new Matrix(matrix1.rows.length, matrix2.getColumnsCount());
 
-        Vector[] columns = new Vector[resultMatrix.getColumnsCount()];
+        Vector[] matrix2columns = new Vector[matrix2.getColumnsCount()];
 
         for (int i = 0; i < matrix2.getColumnsCount(); i++) {
-            columns[i] = matrix2.getColumn(i);
+            matrix2columns[i] = matrix2.getColumn(i);
         }
 
         for (int i = 0; i < resultMatrix.rows.length; i++) {
             for (int j = 0; j < resultMatrix.getColumnsCount(); j++) {
-                resultMatrix.rows[i].setComponent(j, Vector.getScalarProduct(matrix1.rows[i], columns[j]));
+                resultMatrix.rows[i].setComponent(j, Vector.getScalarProduct(matrix1.rows[i], matrix2columns[j]));
             }
         }
 
