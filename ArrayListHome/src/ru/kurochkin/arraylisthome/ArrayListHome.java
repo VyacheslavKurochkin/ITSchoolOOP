@@ -54,7 +54,7 @@ public class ArrayListHome {
         } catch (FileNotFoundException e) {
             System.out.println("Файл \"" + inputFileName + "\" не найден");
         } catch (IOException e) {
-            System.out.println("Процедура getFileLines. Ошибка: " + e.getMessage());
+            System.out.println("Функция getFileLines. Ошибка: " + e.getMessage());
         }
 
         ArrayList<Integer> numbers = new ArrayList<>(Arrays.asList(1, 21, 30, 4, 5, 5, 67, 1, 5, 8));
