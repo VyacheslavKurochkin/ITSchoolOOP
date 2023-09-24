@@ -59,7 +59,7 @@ public class CsvToHtmlConverter {
 
                 if ((isQuotePreviousCharacter || !isQuotedCell) && isRowBegin) {
                     writer.println(HTML_TAG_TABLE_CELL_END);
-                    writer.print(rowOffset + HTML_TAG_TABLE_ROW_END);
+                    writer.println(rowOffset + HTML_TAG_TABLE_ROW_END);
 
                     isCellBegin = false;
                     isRowBegin = false;
