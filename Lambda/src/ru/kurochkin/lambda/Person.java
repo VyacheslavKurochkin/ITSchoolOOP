@@ -1,8 +1,8 @@
-package ru.kurochkin.lambda_person;
+package ru.kurochkin.lambda;
 
 public class Person {
-    private int age;
-    private String name;
+    private final int age;
+    private final String name;
 
     public Person(int age, String name) {
         this.age = age;
