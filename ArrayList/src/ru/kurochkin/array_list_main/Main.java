@@ -1,18 +1,20 @@
-package ru.kurochkin.arraylist_main;
+package ru.kurochkin.array_list_main;
 
-import ru.kurochkin.arraylist.*;
+import ru.kurochkin.array_list.*;
 
 import java.util.Arrays;
 import java.util.LinkedList;
 
 public class Main {
     public static void main(String[] args) {
-        ArrayList<String> lines1 = new ArrayList<>(Arrays.asList("st1", "st2", "st3", null, "22"));
+        ArrayList<String> lines1 = new ArrayList<>(Arrays.asList("st1", "st2", "st3", null, "22", "st2"));
         ArrayList<Integer> numbers = new ArrayList<>();
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 4; i++) {
             numbers.add(i);
         }
+
+        numbers.add(1, 2);
 
         System.out.println("Список строк:");
         System.out.println(lines1);
@@ -23,7 +25,7 @@ public class Main {
         System.out.println();
         System.out.println("Метод removeAll:");
 
-        lines1.removeAll(Arrays.asList("11", null, "78"));
+        lines1.removeAll(Arrays.asList("11", null, "78", "st2"));
         System.out.println("Список строк: " + lines1);
 
         System.out.println();
@@ -57,14 +59,14 @@ public class Main {
         System.out.println("Перебор всех элементов списка для вывода на экран");
 
         StringBuilder sb = new StringBuilder();
-        sb.append("[");
+        sb.append('[');
 
         for (String item : lines1) {
             sb.append(item).append(", ");
         }
 
         sb.delete(sb.length() - 2, sb.length());
-        sb.append("]");
+        sb.append(']');
 
         System.out.println(sb);
 
@@ -72,6 +74,8 @@ public class Main {
         System.out.println("Список строк. Метод lastIndexOf");
         System.out.println("Запуск с параметром: null");
         System.out.println("Результат: " + lines1.lastIndexOf(null));
+
+        lines1.remove(null);
 
         System.out.println();
         System.out.println("Список строк. Метод replaceAll");
