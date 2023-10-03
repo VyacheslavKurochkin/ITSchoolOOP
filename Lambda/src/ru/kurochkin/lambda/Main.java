@@ -7,7 +7,7 @@ import java.util.stream.Stream;
 
 public class Main {
     public static void main(String[] args) {
-        ArrayList<Person> persons = new ArrayList<>(Arrays.asList(new Person(12, "Дмитрий"),
+        List<Person> persons = Arrays.asList(new Person(12, "Дмитрий"),
                 new Person(27, "Олег"),
                 new Person(43, "Тимур"),
                 new Person(39, "Владимир"),
@@ -16,13 +16,12 @@ public class Main {
                 new Person(21, "Анна"),
                 new Person(33, "Олег"),
                 new Person(29, "Дмитрий"),
-                new Person(39, "Василий")));
+                new Person(39, "Василий"));
 
-        Stream<String> distinctNamesStream = persons.stream()
+        List<String> distinctNamesList = persons.stream()
                 .map(Person::getName)
-                .distinct();
-
-        ArrayList<String> distinctNamesList = new ArrayList<>(distinctNamesStream.toList());
+                .distinct()
+                .toList();
 
         System.out.println("А) Список уникальных имен:");
         System.out.println(distinctNamesList);
@@ -32,42 +31,41 @@ public class Main {
         System.out.println(distinctNamesList.stream()
                 .collect(Collectors.joining(", ", "Имена: ", ".")));
 
-        ArrayList<Person> filteredByYoungerEighteenAgePersons = new ArrayList<>(persons.stream()
+        List<Person> filteredByYounger18AgePersons = persons.stream()
                 .filter(person -> person.getAge() < 18)
-                .toList());
+                .toList();
 
         System.out.println();
         System.out.println("В) Средний возраст людей младше 18: ");
 
-        if (filteredByYoungerEighteenAgePersons.isEmpty()) {
+        if (filteredByYounger18AgePersons.isEmpty()) {
             System.out.println("Людей младше 18 в списке нет");
         } else {
-            OptionalDouble youngerEighteenPersonsAverageAge = filteredByYoungerEighteenAgePersons.stream()
-                    .mapToDouble(Person::getAge)
+            OptionalDouble younger18PersonsAverageAge = filteredByYounger18AgePersons.stream()
+                    .mapToInt(Person::getAge)
                     .average();
 
-            youngerEighteenPersonsAverageAge.ifPresent(System.out::println);
+            younger18PersonsAverageAge.ifPresent(System.out::println);
         }
 
-        Map<String, Double> distinctNamesAverageAges = persons.stream()
+        Map<String, Double> averageAgesByNames = persons.stream()
                 .collect(Collectors.groupingBy(Person::getName, Collectors.averagingInt(Person::getAge)));
 
         System.out.println();
         System.out.println("Г) Map, в котором ключи – имена, а значения – средний возраст:");
 
-        for (Map.Entry<String, Double> item : distinctNamesAverageAges.entrySet()) {
+        for (Map.Entry<String, Double> item : averageAgesByNames.entrySet()) {
             System.out.println(item.getKey() + "\t" + item.getValue());
         }
 
-        ArrayList<String> filteredByAgePersons = new ArrayList<>(persons.stream()
+        List<Person> filteredByAgePersons = persons.stream()
                 .filter(person -> person.getAge() >= 20 && person.getAge() <= 45)
                 .sorted((person1, person2) -> Integer.compare(person2.getAge(), person1.getAge()))
-                .map(Person::getName)
-                .toList());
+                .toList();
 
         System.out.println();
         System.out.println("Д) Люди, возраст которых от 20 до 45, в порядке убывания возраста:");
-        System.out.println(filteredByAgePersons);
+        System.out.println(filteredByAgePersons.stream().map(Person::getName).toList());
 
         Scanner scanner = new Scanner(System.in);
 
@@ -80,7 +78,7 @@ public class Main {
                 .map(Math::sqrt)
                 .limit(numbersCount);
 
-        System.out.println("Бесконечный поток корней чисел. Количество элементов " + numbersCount + " :");
+        System.out.println("Бесконечный поток корней чисел. Количество элементов " + numbersCount + ":");
         numbersSquareRoots.forEach(System.out::println);
     }
 }
