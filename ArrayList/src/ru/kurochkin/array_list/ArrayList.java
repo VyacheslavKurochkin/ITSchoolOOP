@@ -10,19 +10,17 @@ public class ArrayList<E> implements List<E> {
     private int size;
     private int modCount;
 
-    @SuppressWarnings("unchecked")
     public ArrayList() {
-        items = (E[]) new Object[DEFAULT_CAPACITY];
+        createNewItems(DEFAULT_CAPACITY);
     }
 
-    @SuppressWarnings("unchecked")
     public ArrayList(int capacity) {
         if (capacity < 0) {
             throw new IllegalArgumentException("Не допустимое значение " + capacity + " для размера списка. " +
                     "Допустимые значения начинаются с 0");
         }
 
-        items = (E[]) new Object[capacity];
+        createNewItems(capacity);
     }
 
     @SuppressWarnings("unchecked")
@@ -35,7 +33,7 @@ public class ArrayList<E> implements List<E> {
     private class ArrayListIterator implements Iterator<E> {
         private int originalModCount;
         private int currentIndex = -1;
-        private boolean isNextReturned = false;
+        private boolean isNextReturned;
 
         public ArrayListIterator() {
             originalModCount = modCount;
@@ -68,12 +66,8 @@ public class ArrayList<E> implements List<E> {
         }
 
         public void remove() {
-            if (currentIndex < 0) {
-                throw new IndexOutOfBoundsException("Не получен текущий элемент списка");
-            }
-
             if (!isNextReturned) {
-                throw new IllegalStateException("Текущий элемент был удален");
+                throw new IllegalStateException("Не получен текущий элемент");
             }
 
             checkModifications();
@@ -94,11 +88,22 @@ public class ArrayList<E> implements List<E> {
         }
     }
 
+    @SuppressWarnings("unchecked")
+    private void createNewItems(int capacity) {
+        items = (E[]) new Object[capacity];
+    }
+
     private void setCapacity(int capacity) {
         items = Arrays.copyOf(items, capacity);
     }
 
     public void ensureCapacity(int capacity) {
+        if (items.length == 0) {
+            createNewItems(capacity);
+
+            return;
+        }
+
         if (items.length < capacity) {
             setCapacity(capacity);
         }
@@ -157,8 +162,8 @@ public class ArrayList<E> implements List<E> {
             return (T[]) Arrays.copyOf(items, size);
         }
 
-        //noinspection unchecked
-        System.arraycopy((T[]) items, 0, array, 0, size);
+        //noinspection SuspiciousSystemArraycopy
+        System.arraycopy(items, 0, array, 0, size);
 
         if (array.length > size) {
             array[size] = null;
@@ -176,7 +181,9 @@ public class ArrayList<E> implements List<E> {
 
     @Override
     public void add(int index, E item) {
-        ensureCapacity(size * 2);
+        if (items.length == size) {
+            increaseCapacity();
+        }
 
         if (index != size) {
             checkIndex(index);
@@ -186,7 +193,6 @@ public class ArrayList<E> implements List<E> {
 
         items[index] = item;
         size++;
-
         modCount++;
     }
 
@@ -219,7 +225,6 @@ public class ArrayList<E> implements List<E> {
         }
 
         size += collection.size();
-
         modCount++;
 
         return true;
@@ -254,7 +259,6 @@ public class ArrayList<E> implements List<E> {
 
         size--;
         items[size] = null;
-
         modCount++;
 
         return removedItem;
@@ -268,9 +272,12 @@ public class ArrayList<E> implements List<E> {
 
         boolean isRemoved = false;
 
-        for (Object item : collection) {
-            while (remove(item)) {
+        for (int i = 0; i < size; ) {
+            if (collection.contains(items[i])) {
+                remove(i);
                 isRemoved = true;
+            } else {
+                i++;
             }
         }
 
@@ -300,26 +307,28 @@ public class ArrayList<E> implements List<E> {
     @Override
     public void replaceAll(UnaryOperator<E> operator) {
         for (int i = 0; i < size; i++) {
-
             items[i] = operator.apply(items[i]);
-
-            modCount++;
         }
+
+        modCount++;
     }
 
     @Override
     public void sort(Comparator<? super E> comparator) {
         Arrays.sort(items, 0, size, comparator);
+
+        modCount++;
     }
 
     @Override
     public void clear() {
-        for (int i = 0; i < size; i++) {
-            items[i] = null;
+        if (size == 0) {
+            return;
         }
 
-        size = 0;
+        Arrays.fill(items, null);
 
+        size = 0;
         modCount++;
     }
 
@@ -336,8 +345,6 @@ public class ArrayList<E> implements List<E> {
 
         E oldItem = items[index];
         items[index] = newItem;
-
-        modCount++;
 
         return oldItem;
     }

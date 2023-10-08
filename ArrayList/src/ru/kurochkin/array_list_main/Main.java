@@ -79,6 +79,7 @@ public class Main {
 
         System.out.println();
         System.out.println("Список строк. Метод replaceAll");
+        System.out.println("Запуск с параметром: String::trim");
 
         lines1.replaceAll(String::trim);
         System.out.println("Результат " + lines1);
