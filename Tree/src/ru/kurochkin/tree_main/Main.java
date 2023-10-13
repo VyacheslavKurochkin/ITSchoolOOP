@@ -11,13 +11,13 @@ public class Main {
         BinaryTree<Integer> tree = new BinaryTree<>(numbers);
 
         List<Integer> numbersList = new ArrayList<>();
-        tree.breadthVisit(numbersList::add);
+        tree.visitBreadth(numbersList::add);
 
         System.out.println("Обход в ширину:");
         System.out.println(numbersList);
 
         numbersList.clear();
-        tree.depthVisit(numbersList::add);
+        tree.visitDepth(numbersList::add);
 
         System.out.println();
         System.out.println("Обход в глубину");
@@ -26,10 +26,10 @@ public class Main {
         tree.remove(25);
 
         numbersList.clear();
-        tree.depthRecursiveVisit(numbersList::add);
+        tree.visitDepthRecursive(numbersList::add);
 
         System.out.println();
-        System.out.println("Рекурсивынй обход в глубину после удаления узла со значением 25");
+        System.out.println("Рекурсивный обход в глубину после удаления узла со значением 25");
         System.out.println(numbersList);
     }
 }
