@@ -28,7 +28,7 @@ public class Main {
 
     public static void main(String[] args) {
         Shape[] shapes = {
-                new Square(23.2),
+                new Square(23),
                 new Square(13.2),
                 new Square(3.2),
                 new Rectangle(2, 5),
