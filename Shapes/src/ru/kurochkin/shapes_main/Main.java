@@ -16,7 +16,7 @@ public class Main {
         return shapes[shapes.length - 1];
     }
 
-    public static Shape getShapeByPositionPerimeter(Shape[] shapes, int position) {
+    public static Shape getShapeByPositionFromSortedByDescendingPerimeter(Shape[] shapes, int position) {
         if (position > shapes.length || position <= 0) {
             return null;
         }
@@ -45,7 +45,7 @@ public class Main {
         System.out.println(maxAreaShape);
 
         System.out.println("Фигура со вторым по величине периметром:");
-        Shape secondPerimeterShape = getShapeByPositionPerimeter(shapes, 2);
+        Shape secondPerimeterShape = getShapeByPositionFromSortedByDescendingPerimeter(shapes, 2);
         System.out.println(secondPerimeterShape);
     }
 }
