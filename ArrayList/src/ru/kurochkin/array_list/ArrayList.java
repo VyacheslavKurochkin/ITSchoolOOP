@@ -82,7 +82,7 @@ public class ArrayList<E> implements List<E> {
 
     private void increaseCapacity() {
         if (items.length == 0) {
-            setCapacity(DEFAULT_CAPACITY);
+            createNewItems(DEFAULT_CAPACITY);
         } else {
             setCapacity(items.length * 2);
         }
@@ -117,10 +117,10 @@ public class ArrayList<E> implements List<E> {
         setCapacity(size);
     }
 
-    private void checkIndex(int index) {
-        if (index < 0 || index >= size) {
+    private void checkIndex(int index, int maxIndex) {
+        if (index < 0 || index > maxIndex) {
             throw new IndexOutOfBoundsException("Индекс " + index + " за пределами диапазона допустимых значений " +
-                    "[0.." + (size - 1) + "]");
+                    "[0.." + maxIndex + "]");
         }
     }
 
@@ -185,9 +185,9 @@ public class ArrayList<E> implements List<E> {
             increaseCapacity();
         }
 
-        if (index != size) {
-            checkIndex(index);
+        checkIndex(index, size);
 
+        if (index != size) {
             System.arraycopy(items, index, items, index + 1, size - index);
         }
 
@@ -207,9 +207,7 @@ public class ArrayList<E> implements List<E> {
             return false;
         }
 
-        if (index != size) {
-            checkIndex(index);
-        }
+        checkIndex(index, size);
 
         ensureCapacity(size + collection.size());
 
@@ -249,7 +247,7 @@ public class ArrayList<E> implements List<E> {
 
     @Override
     public E remove(int index) {
-        checkIndex(index);
+        checkIndex(index, size - 1);
 
         E removedItem = items[index];
 
@@ -326,22 +324,21 @@ public class ArrayList<E> implements List<E> {
             return;
         }
 
-        Arrays.fill(items, null);
-
+        Arrays.fill(items, 0, size - 1, null);
         size = 0;
         modCount++;
     }
 
     @Override
     public E get(int index) {
-        checkIndex(index);
+        checkIndex(index, size - 1);
 
         return items[index];
     }
 
     @Override
     public E set(int index, E newItem) {
-        checkIndex(index);
+        checkIndex(index, size - 1);
 
         E oldItem = items[index];
         items[index] = newItem;
