@@ -3,27 +3,27 @@ package ru.kurochkin.hash_table;
 import java.util.*;
 
 public class HashTable<E> implements Collection<E> {
-    private final int DEFAULT_SIZE = 100;
+    private static final int DEFAULT_ARRAY_LENGTH = 100;
 
     private LinkedList<E>[] lists;
     private int size;
     private int modCount;
 
-    public HashTable(int size) {
-        if (size < 0) {
-            throw new IllegalArgumentException("Не допустимое значение " + size + " для размера таблицы. " +
+    public HashTable(int arrayLength) {
+        if (arrayLength < 1) {
+            throw new IllegalArgumentException("Не допустимое значение " + arrayLength + " для размера таблицы. " +
                     "Допустимые значения начинаются с 0");
         }
 
-        createLists(size);
+        createLists(arrayLength);
     }
 
     public HashTable() {
-        createLists(DEFAULT_SIZE);
+        createLists(DEFAULT_ARRAY_LENGTH);
     }
 
     public HashTable(Collection<? extends E> collection) {
-        createLists(Math.max(DEFAULT_SIZE, collection.size()));
+        createLists(Math.max(DEFAULT_ARRAY_LENGTH, collection.size()));
 
         addAll(collection);
     }
@@ -42,7 +42,9 @@ public class HashTable<E> implements Collection<E> {
         private int getNextIndex() {
             for (int i = hashTableListsIndex + 1; i < lists.length; i++) {
                 if (lists[i] != null) {
-                    return i;
+                    if (!lists[i].isEmpty()) {
+                        return i;
+                    }
                 }
             }
 
@@ -62,7 +64,7 @@ public class HashTable<E> implements Collection<E> {
 
         @Override
         public boolean hasNext() {
-            return passedItemsCount < HashTable.this.size;
+            return passedItemsCount < size;
         }
 
         @Override
@@ -94,12 +96,7 @@ public class HashTable<E> implements Collection<E> {
             }
 
             listIterator.remove();
-
-            if (lists[hashTableListsIndex].isEmpty()) {
-                HashTable.this.remove(hashTableListsIndex);
-            }
-
-            originalModCount = modCount;
+            modCount++;
 
             isNextReturned = false;
         }
@@ -110,12 +107,12 @@ public class HashTable<E> implements Collection<E> {
         lists = new LinkedList[size];
     }
 
-    private int getIndex(Object listItem) {
-        if (listItem == null) {
+    private int getIndex(Object object) {
+        if (object == null) {
             return 0;
         }
 
-        return Math.abs(listItem.hashCode() % (lists.length - 1));
+        return Math.abs(object.hashCode() % lists.length);
     }
 
     @Override
@@ -129,14 +126,10 @@ public class HashTable<E> implements Collection<E> {
     }
 
     @Override
-    public boolean contains(Object listItem) {
-        int index = getIndex(listItem);
+    public boolean contains(Object object) {
+        int index = getIndex(object);
 
-        if (lists[index] != null) {
-            return lists[index].contains(listItem);
-        }
-
-        return false;
+        return lists[index] != null && lists[index].contains(object);
     }
 
     @Override
@@ -148,14 +141,14 @@ public class HashTable<E> implements Collection<E> {
     public Object[] toArray() {
         Object[] array = new Object[size];
 
-        int currentIndex = 0;
+        int i = 0;
 
-        for (List<E> listItem : lists) {
-            if (listItem != null) {
-                for (E item : listItem) {
-                    array[currentIndex] = item;
+        for (List<E> list : lists) {
+            if (list != null) {
+                for (E item : list) {
+                    array[i] = item;
 
-                    currentIndex++;
+                    i++;
                 }
             }
         }
@@ -167,7 +160,7 @@ public class HashTable<E> implements Collection<E> {
     public <T> T[] toArray(T[] array) {
         if (array.length < size) {
             //noinspection unchecked
-            return Arrays.copyOf((T[]) toArray(), size);
+            return (T[]) Arrays.copyOf(toArray(), size, array.getClass());
         }
 
         //noinspection SuspiciousSystemArraycopy
@@ -181,14 +174,14 @@ public class HashTable<E> implements Collection<E> {
     }
 
     @Override
-    public boolean add(E listItem) {
-        int index = getIndex(listItem);
+    public boolean add(E data) {
+        int index = getIndex(data);
 
         if (lists[index] == null) {
             lists[index] = new LinkedList<>();
         }
 
-        lists[index].add(listItem);
+        lists[index].add(data);
 
         modCount++;
         size++;
@@ -197,20 +190,18 @@ public class HashTable<E> implements Collection<E> {
     }
 
     @Override
-    public boolean remove(Object listItem) {
-        int index = getIndex(listItem);
+    public boolean remove(Object object) {
+        int index = getIndex(object);
 
         if (lists[index] == null) {
             return false;
         }
 
-        if (!lists[index].isEmpty()) {
-            if (lists[index].remove(listItem)) {
-                size--;
-                modCount++;
+        if (lists[index].remove(object)) {
+            size--;
+            modCount++;
 
-                return true;
-            }
+            return true;
         }
 
         return false;
@@ -234,9 +225,7 @@ public class HashTable<E> implements Collection<E> {
         }
 
         for (E item : collection) {
-            if (!add(item)) {
-                return false;
-            }
+            add(item);
         }
 
         return true;
@@ -248,15 +237,19 @@ public class HashTable<E> implements Collection<E> {
             return false;
         }
 
-        boolean isDeleted = false;
+        if (size == 0) {
+            return false;
+        }
+
+        boolean isRemoved = false;
 
         for (Object item : collection) {
             while (remove(item)) {
-                isDeleted = true;
+                isRemoved = true;
             }
         }
 
-        return isDeleted;
+        return isRemoved;
     }
 
     @Override
@@ -267,14 +260,14 @@ public class HashTable<E> implements Collection<E> {
 
         boolean isChanged = false;
 
-        for (List<E> listItem : lists) {
-            if (listItem != null) {
-                int listItemSize = listItem.size();
+        for (List<E> list : lists) {
+            if (list != null) {
+                int listItemSize = list.size();
 
-                if (listItem.retainAll(collection)) {
+                if (list.retainAll(collection)) {
                     isChanged = true;
 
-                    size -= listItemSize - listItem.size();
+                    size -= listItemSize - list.size();
                 }
             }
         }
@@ -304,11 +297,9 @@ public class HashTable<E> implements Collection<E> {
 
         sb.append('[');
 
-        for (LinkedList<E> listItem : lists) {
-            if (listItem != null) {
-                sb.append(listItem);
-                sb.append(", ");
-            }
+        for (LinkedList<E> list : lists) {
+            sb.append(list);
+            sb.append(", ");
         }
 
         sb.delete(sb.length() - 2, sb.length());

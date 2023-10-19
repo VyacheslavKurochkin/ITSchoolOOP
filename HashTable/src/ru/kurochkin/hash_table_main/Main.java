@@ -27,7 +27,7 @@ public class Main {
         System.out.println();
         System.out.println("Список строк. Метод containsAll");
         System.out.println("Запуск с параметром массив целых чисел: " + Arrays.toString(numbersArray));
-        System.out.println("Результат: " + numbers.containsAll(Arrays.stream(numbersArray).toList()));
+        System.out.println("Результат: " + numbers.containsAll(Arrays.asList(numbersArray)));
 
         Integer numberToRemove = 10;
 
