@@ -3,24 +3,29 @@ package ru.kurochkin.tree;
 import java.util.*;
 import java.util.function.Consumer;
 
-public class BinaryTree<E> {
+public class BinarySearchTree<E> {
     private Node<E> root;
     private int nodesCount;
-    private Comparator<E> comparator;
+    private final Comparator<E> comparator;
 
-    public BinaryTree() {
+    public BinarySearchTree() {
+        comparator = null;
     }
 
-    public BinaryTree(Comparator<E> comparator) {
+    public BinarySearchTree(Comparator<E> comparator) {
         this.comparator = comparator;
     }
 
-    public BinaryTree(E data) {
+    public BinarySearchTree(E data) {
+        comparator = null;
+
         add(data);
     }
 
     @SuppressWarnings("unchecked")
-    public BinaryTree(E... array) {
+    public BinarySearchTree(E... array) {
+        comparator = null;
+
         for (E data : array) {
             add(data);
         }
@@ -37,6 +42,10 @@ public class BinaryTree<E> {
     }
 
     private int compare(E data1, E data2) {
+        if (comparator != null) {
+            return comparator.compare(data1, data2);
+        }
+
         if (data1 == null && data2 == null) {
             return 0;
         }
@@ -47,10 +56,6 @@ public class BinaryTree<E> {
 
         if (data2 == null) {
             return 1;
-        }
-
-        if (comparator != null) {
-            return comparator.compare(data1, data2);
         }
 
         //noinspection unchecked
@@ -67,7 +72,6 @@ public class BinaryTree<E> {
         Node<E> currentNode = root;
 
         while (currentNode != null) {
-
             if (compare(data, currentNode.getData()) < 0) {
                 if (currentNode.getLeft() == null) {
                     currentNode.setLeft(createNode(data));
@@ -92,11 +96,13 @@ public class BinaryTree<E> {
         Node<E> currentNode = root;
 
         while (currentNode != null) {
-            if (compare(data, currentNode.getData()) == 0) {
+            int dataEqualityResult = compare(data, currentNode.getData());
+
+            if (dataEqualityResult == 0) {
                 return currentNode;
             }
 
-            if (compare(data, currentNode.getData()) < 0) {
+            if (dataEqualityResult < 0) {
                 if (currentNode.getLeft() == null) {
                     return null;
                 }
@@ -123,13 +129,15 @@ public class BinaryTree<E> {
         Node<E> parentNode = null;
 
         while (removedNode != null) {
-            if (compare(removedNode.getData(), data) == 0) {
+            int dataEqualityResult = compare(data, removedNode.getData());
+
+            if (dataEqualityResult == 0) {
                 break;
             }
 
             parentNode = removedNode;
 
-            if (compare(data, removedNode.getData()) < 0) {
+            if (dataEqualityResult < 0) {
                 removedNode = removedNode.getLeft();
             } else {
                 removedNode = removedNode.getRight();
@@ -142,28 +150,26 @@ public class BinaryTree<E> {
 
         Node<E> childNode;
 
-        if (removedNode.getLeft() != null && removedNode.getRight() != null) {
+        if (removedNode.getLeft() == null || removedNode.getRight() == null) {
+            childNode = removedNode.getLeft() != null ? removedNode.getLeft() : removedNode.getRight();
+        } else {
             Node<E> minLeftNode = removedNode.getRight();
             Node<E> minLeftNodeParent = null;
 
             while (minLeftNode.getLeft() != null) {
                 minLeftNodeParent = minLeftNode;
+
                 minLeftNode = minLeftNode.getLeft();
             }
 
             if (minLeftNodeParent != null) {
-                if (minLeftNode.getRight() != null) {
-                    minLeftNodeParent.setLeft(minLeftNode.getRight());
-                }
-
+                minLeftNodeParent.setLeft(minLeftNode.getRight());
                 minLeftNode.setRight(removedNode.getRight());
             }
 
             minLeftNode.setLeft(removedNode.getLeft());
 
             childNode = minLeftNode;
-        } else {
-            childNode = removedNode.getLeft() != null ? removedNode.getLeft() : removedNode.getRight();
         }
 
         removedNode.setLeft(null);
@@ -184,7 +190,7 @@ public class BinaryTree<E> {
         return true;
     }
 
-    public void visitBreadth(Consumer<E> consumer) {
+    public void visitInBreadth(Consumer<E> consumer) {
         if (root == null) {
             return;
         }
@@ -208,7 +214,7 @@ public class BinaryTree<E> {
         }
     }
 
-    public void visitDepth(Consumer<E> consumer) {
+    public void visitInDepth(Consumer<E> consumer) {
         if (root == null) {
             return;
         }
@@ -232,19 +238,18 @@ public class BinaryTree<E> {
         }
     }
 
-    public void visitDepthRecursive(Consumer<E> consumer) {
-        visitDepthRecursive(root, consumer);
+    public void visitInDepthRecursive(Consumer<E> consumer) {
+        visitInDepthRecursive(root, consumer);
     }
 
-    private void visitDepthRecursive(Node<E> node, Consumer<E> consumer) {
+    private void visitInDepthRecursive(Node<E> node, Consumer<E> consumer) {
         if (node == null) {
             return;
         }
 
         consumer.accept(node.getData());
 
-        visitDepthRecursive(node.getLeft(), consumer);
-
-        visitDepthRecursive(node.getRight(), consumer);
+        visitInDepthRecursive(node.getLeft(), consumer);
+        visitInDepthRecursive(node.getRight(), consumer);
     }
 }
