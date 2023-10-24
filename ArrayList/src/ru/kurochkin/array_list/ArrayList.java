@@ -181,11 +181,11 @@ public class ArrayList<E> implements List<E> {
 
     @Override
     public void add(int index, E item) {
+        checkIndex(index, size);
+
         if (items.length == size) {
             increaseCapacity();
         }
-
-        checkIndex(index, size);
 
         if (index != size) {
             System.arraycopy(items, index, items, index + 1, size - index);
@@ -324,7 +324,7 @@ public class ArrayList<E> implements List<E> {
             return;
         }
 
-        Arrays.fill(items, 0, size - 1, null);
+        Arrays.fill(items, 0, size, null);
         size = 0;
         modCount++;
     }
