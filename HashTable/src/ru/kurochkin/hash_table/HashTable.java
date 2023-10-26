@@ -12,7 +12,7 @@ public class HashTable<E> implements Collection<E> {
     public HashTable(int arrayLength) {
         if (arrayLength < 1) {
             throw new IllegalArgumentException("Не допустимое значение " + arrayLength + " для размера таблицы. " +
-                    "Допустимые значения начинаются с 0");
+                    "Допустимые значения начинаются с 1");
         }
 
         createLists(arrayLength);
@@ -29,35 +29,30 @@ public class HashTable<E> implements Collection<E> {
     }
 
     private class HashTableIterator implements Iterator<E> {
-        private int originalModCount;
-        private int hashTableListsIndex = -1;
+        private final int initialModCount;
+        private int listIndex = -1;
         private boolean isNextReturned;
         private int passedItemsCount;
         private ListIterator<E> listIterator;
 
         public HashTableIterator() {
-            originalModCount = modCount;
-        }
-
-        private int getNextIndex() {
-            for (int i = hashTableListsIndex + 1; i < lists.length; i++) {
-                if (lists[i] != null) {
-                    if (!lists[i].isEmpty()) {
-                        return i;
-                    }
-                }
-            }
-
-            return -1;
+            initialModCount = modCount;
         }
 
         private void setNext() {
-            hashTableListsIndex = getNextIndex();
-            listIterator = lists[hashTableListsIndex].listIterator();
+            for (int i = listIndex + 1; i < lists.length; i++) {
+                if (lists[i] != null && !lists[i].isEmpty()) {
+                    listIndex = i;
+
+                    break;
+                }
+            }
+
+            listIterator = lists[listIndex].listIterator();
         }
 
         private void checkModifications() {
-            if (originalModCount != modCount) {
+            if (initialModCount != modCount) {
                 throw new ConcurrentModificationException("Таблица изменена во время обхода");
             }
         }
@@ -72,14 +67,10 @@ public class HashTable<E> implements Collection<E> {
             checkModifications();
 
             if (!hasNext()) {
-                throw new NoSuchElementException("Невозможно получить следующий элемент, достигнут конец списка");
+                throw new NoSuchElementException("Невозможно получить следующий элемент, достигнут конец коллекции");
             }
 
-            if (hashTableListsIndex < 0) {
-                setNext();
-            }
-
-            if (!listIterator.hasNext()) {
+            if (listIndex < 0 || !listIterator.hasNext()) {
                 setNext();
             }
 
@@ -97,7 +88,8 @@ public class HashTable<E> implements Collection<E> {
 
             listIterator.remove();
             modCount++;
-
+            size--;
+            
             isNextReturned = false;
         }
     }
@@ -262,12 +254,12 @@ public class HashTable<E> implements Collection<E> {
 
         for (List<E> list : lists) {
             if (list != null) {
-                int listItemSize = list.size();
+                int listSize = list.size();
 
                 if (list.retainAll(collection)) {
                     isChanged = true;
 
-                    size -= listItemSize - list.size();
+                    size -= listSize - list.size();
                 }
             }
         }
@@ -298,8 +290,7 @@ public class HashTable<E> implements Collection<E> {
         sb.append('[');
 
         for (LinkedList<E> list : lists) {
-            sb.append(list);
-            sb.append(", ");
+            sb.append(list).append(", ");
         }
 
         sb.delete(sb.length() - 2, sb.length());

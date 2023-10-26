@@ -12,11 +12,11 @@ public class Main {
             numbers.add(i);
         }
 
-        System.out.println("Список чисел:");
+        System.out.println("Коллекция чисел:");
         System.out.println(numbers);
 
         System.out.println();
-        System.out.println("Список чисел. Метод toArray:");
+        System.out.println("Метод toArray:");
 
         Integer[] numbersArray = {1, 0, 2};
         System.out.println("Запуск с параметром массив целых чисел: " + Arrays.toString(numbersArray));
@@ -25,20 +25,20 @@ public class Main {
         System.out.println("Результат: " + Arrays.toString(resultNumbersArray));
 
         System.out.println();
-        System.out.println("Список строк. Метод containsAll");
+        System.out.println("Метод containsAll");
         System.out.println("Запуск с параметром массив целых чисел: " + Arrays.toString(numbersArray));
         System.out.println("Результат: " + numbers.containsAll(Arrays.asList(numbersArray)));
 
         Integer numberToRemove = 10;
 
         System.out.println();
-        System.out.println("Список строк. Метод remove");
+        System.out.println("Метод remove");
         System.out.println("Запуск с параметром число: " + numberToRemove);
         System.out.println("Результат: " + numbers.remove(numberToRemove));
 
         System.out.println();
-        System.out.println("Список строк. Итератор");
-        System.out.println("Перебор всех элементов списка для вывода на экран");
+        System.out.println("Итератор");
+        System.out.println("Перебор всех элементов коллекции для вывода на экран");
 
         StringBuilder sb = new StringBuilder();
         sb.append('[');
