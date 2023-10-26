@@ -5,11 +5,6 @@ public class FahrenheitScale implements Scale {
     public static final double CELSIUS_TO_FAHRENHEIT_RATE = 1.8;
 
     @Override
-    public String getName() {
-        return "Фаренгейта";
-    }
-
-    @Override
     public double convertFromCelsius(double celsiusDegrees) {
         return WATER_FREEZING_DEGREES_FAHRENHEIT + celsiusDegrees * CELSIUS_TO_FAHRENHEIT_RATE;
     }

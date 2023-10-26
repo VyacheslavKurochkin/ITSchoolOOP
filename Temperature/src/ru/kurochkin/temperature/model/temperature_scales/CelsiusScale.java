@@ -2,11 +2,6 @@ package ru.kurochkin.temperature.model.temperature_scales;
 
 public class CelsiusScale implements Scale {
     @Override
-    public String getName() {
-        return "Цельсия";
-    }
-
-    @Override
     public double convertFromCelsius(double celsiusDegrees) {
         return celsiusDegrees;
     }

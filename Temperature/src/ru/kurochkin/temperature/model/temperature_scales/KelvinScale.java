@@ -4,11 +4,6 @@ public class KelvinScale implements Scale {
     public static final double ABSOLUTE_ZERO_DEGREES_CELSIUS = -273.15;
 
     @Override
-    public String getName() {
-        return "Кельвина";
-    }
-
-    @Override
     public double convertFromCelsius(double celsiusDegrees) {
         return -ABSOLUTE_ZERO_DEGREES_CELSIUS + celsiusDegrees;
     }
