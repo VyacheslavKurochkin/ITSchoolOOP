@@ -92,36 +92,32 @@ public class BinarySearchTree<E> {
         }
     }
 
-    private Node<E> getNode(E data) {
+    public boolean contains(E data) {
         Node<E> currentNode = root;
 
         while (currentNode != null) {
-            int dataEqualityResult = compare(data, currentNode.getData());
+            int comparisonResult = compare(data, currentNode.getData());
 
-            if (dataEqualityResult == 0) {
-                return currentNode;
+            if (comparisonResult == 0) {
+                return true;
             }
 
-            if (dataEqualityResult < 0) {
+            if (comparisonResult < 0) {
                 if (currentNode.getLeft() == null) {
-                    return null;
+                    return false;
                 }
 
                 currentNode = currentNode.getLeft();
             } else {
                 if (currentNode.getRight() == null) {
-                    return null;
+                    return false;
                 }
 
                 currentNode = currentNode.getRight();
             }
         }
 
-        return null;
-    }
-
-    public boolean contains(E data) {
-        return getNode(data) != null;
+        return false;
     }
 
     public boolean remove(E data) {
