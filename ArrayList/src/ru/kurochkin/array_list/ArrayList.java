@@ -159,7 +159,7 @@ public class ArrayList<E> implements List<E> {
     public <T> T[] toArray(T[] array) {
         if (array.length < size) {
             //noinspection unchecked
-            return (T[]) Arrays.copyOf(items, size);
+            return (T[]) Arrays.copyOf(items, size, array.getClass());
         }
 
         //noinspection SuspiciousSystemArraycopy
