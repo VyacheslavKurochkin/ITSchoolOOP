@@ -29,7 +29,7 @@ public class HashTable<E> implements Collection<E> {
     }
 
     private class HashTableIterator implements Iterator<E> {
-        private final int initialModCount;
+        private int initialModCount;
         private int listIndex = -1;
         private boolean isNextReturned;
         private int passedItemsCount;
@@ -87,9 +87,10 @@ public class HashTable<E> implements Collection<E> {
             }
 
             listIterator.remove();
+            initialModCount++;
             modCount++;
             size--;
-            
+
             isNextReturned = false;
         }
     }
